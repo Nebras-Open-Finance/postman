@@ -95,7 +95,7 @@ mTLS is required for all calls to the Trust Framework endpoints. Configure your 
 
 Send a request to the **TPP Registration** endpoint in the collection.
 
-A `201 Created` or `200 OK` response confirms mTLS and your credentials are configured correctly.
+A `204` response confirms mTLS and your credentials are configured correctly and you are ready to start communicating with the LFI.
 
 > If you receive a `400` or an SSL handshake error, double-check that the host pattern in your certificate entry matches the LFI's domain exactly.
 
@@ -135,4 +135,4 @@ The collection pre-scripts automatically generate a fresh UUIDv4 for each reques
 
 ## Support
 
-For issues with the Trust Framework or onboarding, contact the UAE Open Finance team through the official portal.
+For issues with the Trust Framework or onboarding, contact the UAE Open Finance team through the [Service Desk Portal](https://servicedesk.nebrasopenfinance.ae/servicedesk/customer/portal/2s) 
