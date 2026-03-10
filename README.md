@@ -116,6 +116,23 @@ Set the following variables in the collection or environment before running requ
 
 ---
 
+## Traceability — `x-fapi-interaction-id`
+
+Every request in this collection includes an `x-fapi-interaction-id` header. This is a **UUIDv4** that must be unique per request and is echoed back by the server in the response header of the same name.
+
+Its purpose is end-to-end traceability: the value is logged by all parties in the call chain, making it possible to correlate a specific API call across TPP, LFI, and platform logs.
+
+**When raising a support ticket with Nebras**, always include:
+
+- The `x-fapi-interaction-id` value from the request (and the corresponding response if available) — this is **required** to investigate any API-level issue.
+- The **Consent ID** where the issue relates to a specific consent or resource request (e.g. account data retrieval, payment initiation).
+
+> Without the `x-fapi-interaction-id`, support teams cannot locate the specific transaction in platform logs and investigation will be significantly delayed.
+
+The collection pre-scripts automatically generate a fresh UUIDv4 for each request. If you are constructing requests manually, ensure you generate a new UUID per call — never reuse a previous value.
+
+---
+
 ## Support
 
 For issues with the Trust Framework or onboarding, contact the UAE Open Finance team through the official portal.
