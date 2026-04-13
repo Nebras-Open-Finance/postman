@@ -54003,550 +54003,13 @@
           ]
         },
         {
-          "name": "Revoke",
+          "name": "Other",
           "item": [
             {
-              "name": "xxxx: LFI-API Hub: Revoke by consent Id",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      ""
-                    ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
-                },
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "exec": [
-                      "// set uuid and time",
-                      "pm.environment.set(\"now\", (new Date()).toUTCString());",
-                      "const uuid = require('uuid');",
-                      "pm.environment.set(\"x-fapi-interaction-id\", uuid.v4());"
-                    ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json",
-                    "type": "text",
-                    "disabled": true
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token-from-client-credentials-grant-private-key-jwt}}",
-                    "type": "text",
-                    "disabled": true
-                  },
-                  {
-                    "key": "x-fapi-interaction-id",
-                    "value": "{{x-fapi-interaction-id}}",
-                    "type": "text",
-                    "disabled": true
-                  },
-                  {
-                    "key": "x-cert-dn",
-                    "value": "CN=e14a49e6-8ad4-4dcf-bd2e-85a38fe8752c,OU=233bcd1d-4216-4b3c-a362-9e4a9282bba7,O=RAIDIAM SERVICES LIMITED,C=UK",
-                    "type": "text",
-                    "disabled": true
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"revokedBy\": \"LFI\",\n  \"revokedByPsu\": {\n    \"userId\": \"{{userId}}\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{cs}}/v2025.47/consents/{{ins-consent-id-from-hh}}/action/revoke",
-                  "host": [
-                    "{{cs}}"
-                  ],
-                  "path": [
-                    "v2025.47",
-                    "consents",
-                    "{{ins-consent-id-from-hh}}",
-                    "action",
-                    "revoke"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "xxxx: LFI-API Hub: Revoke consent by consentGroupId",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      ""
-                    ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
-                },
-                {
-                  "listen": "prerequest",
-                  "script": {
-                    "exec": [
-                      "// set uuid and time",
-                      "pm.environment.set(\"now\", (new Date()).toUTCString());",
-                      "const uuid = require('uuid');",
-                      "pm.environment.set(\"x-fapi-interaction-id\", uuid.v4());"
-                    ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json",
-                    "disabled": true
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token-from-client-credentials-grant-private-key-jwt}}",
-                    "disabled": true
-                  },
-                  {
-                    "key": "x-fapi-interaction-id",
-                    "value": "{{x-fapi-interaction-id}}",
-                    "disabled": true
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"revokedBy\": \"LFI\",\n    \"revokedByPsu\": {\n        \"userId\": \"{{userId}}\"\n    }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{cs}}/v2025.47/consent-groups/{{insurance-base-consent-id}}/consents/action/revoke",
-                  "host": [
-                    "{{cs}}"
-                  ],
-                  "path": [
-                    "v2025.47",
-                    "consent-groups",
-                    "{{insurance-base-consent-id}}",
-                    "consents",
-                    "action",
-                    "revoke"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "Webhook",
-          "item": [
-            {
-              "name": "Webhook-TPP",
+              "name": "Revoke",
               "item": [
                 {
-                  "name": "O3 Util: Prepare request object JWT for PAR end-point",
-                  "event": [
-                    {
-                      "listen": "prerequest",
-                      "script": {
-                        "exec": [
-                          "pm.environment.set(\"exp\", Date.now() / 1000 + 60);",
-                          "pm.environment.set(\"nbf\", (Date.now() / 1000) - 10);",
-                          "",
-                          "const uuid = require('uuid');",
-                          "",
-                          "const codeVerifier = uuid.v4() + uuid.v4();",
-                          "",
-                          "const hashedCodeVerifier = CryptoJS.SHA256(codeVerifier);",
-                          "let codeChallenge = CryptoJS.enc.Base64.stringify(hashedCodeVerifier);",
-                          "",
-                          "console.log(codeVerifier);",
-                          "console.log(hashedCodeVerifier);",
-                          "console.log(codeChallenge);",
-                          "codeChallenge = codeChallenge.replaceAll('+', '-');",
-                          "codeChallenge = codeChallenge.replaceAll('/', '_');",
-                          "if (codeChallenge.endsWith('=')) { codeChallenge = codeChallenge.substring(0, codeChallenge.length - 1)}",
-                          "console.log(codeChallenge);",
-                          "",
-                          "pm.environment.set(\"code-challenge\", codeChallenge );",
-                          "pm.environment.set(\"code-verifier\", codeVerifier );"
-                        ],
-                        "type": "text/javascript",
-                        "packages": {}
-                      }
-                    },
-                    {
-                      "listen": "test",
-                      "script": {
-                        "exec": [
-                          "pm.test(\"Response is valid\", function () {",
-                          "    pm.response.to.have.status(200);",
-                          "    if (pm.response.code === 200) {",
-                          "        pm.environment.set(\"requestObject\", responseBody);",
-                          "    }",
-                          "});",
-                          "",
-                          "",
-                          "var a = responseBody.split('.');",
-                          "var words = CryptoJS.enc.Base64.parse(a[1]);",
-                          "var bodyData = CryptoJS.enc.Utf8.stringify(words);",
-                          "console.log(bodyData);",
-                          "var jsonData = JSON.parse(bodyData);",
-                          "console.log(jsonData);",
-                          "",
-                          "pm.environment.set(\"response_type\", jsonData.response_type);",
-                          "pm.environment.set(\"scope\", jsonData.scope);",
-                          "",
-                          "pm.environment.set(\"insurance-base-consent-id\", jsonData.authorization_details[0].consent.ConsentId);",
-                          "pm.environment.set(\"ins-consent-id-from-hh\", jsonData.authorization_details[0].consent.ConsentId);",
-                          "",
-                          ""
-                        ],
-                        "type": "text/javascript",
-                        "packages": {}
-                      }
-                    }
-                  ],
-                  "protocolProfileBehavior": {
-                    "disableBodyPruning": true
-                  },
-                  "request": {
-                    "method": "GET",
-                    "header": [
-                      {
-                        "key": "content-type",
-                        "value": "application/json"
-                      }
-                    ],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"header\": {\n        \"alg\": \"PS256\",\n        \"kid\": \"{{kid-local}}\"\n    },\n    \"body\": {\n        \"aud\": \"{{issuer}}\",\n        \"exp\": {{exp}},\n        \"iss\": \"{{_clientId}}\",\n        \"scope\": \"insurance openid\",\n        \"redirect_uri\": \"{{redirectUrl}}\",\n        \"client_id\": \"{{_clientId}}\",\n        \"nonce\": \"{{$guid}}\",\n        \"state\": \"{{$guid}}\",\n        \"nbf\": {{nbf}},\n        \"response_type\": \"code\",\n        \"code_challenge_method\": \"S256\",\n        \"code_challenge\": \"{{code-challenge}}\",\n        \"max_age\": 3600,\n        \"authorization_details\": [\n            {\n                \"type\": \"urn:openfinanceuae:insurance-consent:v1.2\",\n                \"consent\": {\n                    \"BaseConsentId\": \"eaa71c98-e0f3-4f08-90a5-21680fd85dad\",\n                    \"ExpirationDateTime\": \"2024-12-25T23:00:00.000Z\",\n                    \"ConsentId\": \"{{$guid}}\",\n                     \"Permissions\": [\n                        \"ReadMotorInsurancePolicies\",\n                        \"ReadMotorInsuranceCustomerBasic\",\n                        \"ReadMotorInsuranceCustomerDetail\",\n                        \"ReadMotorInsuranceProduct\",\n                        \"ReadMotorInsuranceTransactions\",\n                        \"ReadMotorInsuranceCustomerPaymentDetails\"\n                    ],\n                    \"OpenFinanceBilling\": {\n                        \"Purpose\": \"ClaimHistory\"\n                    }\n                },\n                \"subscription\": {\n                    \"Webhook\": {\n                            \"Url\": \"http://localhost:4700/mock-event-receiver\",\n                            \"IsActive\": false\n                        }\n                }\n            }\n        ]\n    },\n    \"signingKeyPEM\": \"{{pem-local}}\"\n}"
-                    },
-                    "url": {
-                      "raw": "{{rs}}/o3/v1.0/message-signature",
-                      "host": [
-                        "{{rs}}"
-                      ],
-                      "path": [
-                        "o3",
-                        "v1.0",
-                        "message-signature"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "O3 Util: Prepare private key JWT for PAR end-point",
-                  "event": [
-                    {
-                      "listen": "prerequest",
-                      "script": {
-                        "exec": [
-                          "pm.environment.set(\"exp\", Date.now() / 1000 + 300);",
-                          "pm.environment.set(\"nbf\", (Date.now() / 1000) - 10);",
-                          "",
-                          "const uuid = require('uuid');",
-                          ""
-                        ],
-                        "type": "text/javascript"
-                      }
-                    },
-                    {
-                      "listen": "test",
-                      "script": {
-                        "exec": [
-                          "pm.environment.set(\"private_key_jwt\", responseBody);"
-                        ],
-                        "type": "text/javascript"
-                      }
-                    }
-                  ],
-                  "protocolProfileBehavior": {
-                    "disableBodyPruning": true
-                  },
-                  "request": {
-                    "method": "GET",
-                    "header": [
-                      {
-                        "key": "content-type",
-                        "value": "application/json"
-                      }
-                    ],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"header\": {\n        \"alg\": \"PS256\",\n        \"kid\": \"{{kid-local}}\"\n    },\n    \"body\": {\n        \"aud\": \"{{issuer}}\",\n        \"exp\": {{exp}},\n        \"iss\": \"{{_clientId}}\",\n        \"sub\": \"{{_clientId}}\",\n        \"jti\": \"{{$guid}}\",\n        \"iat\": {{nbf}}\n    },\n    \"signingKeyPEM\": \"{{pem-local}}\"\n}"
-                    },
-                    "url": {
-                      "raw": "{{rs}}/o3/v1.0/message-signature",
-                      "host": [
-                        "{{rs}}"
-                      ],
-                      "path": [
-                        "o3",
-                        "v1.0",
-                        "message-signature"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "4000: TPP-API Hub: POST to PAR end-point",
-                  "event": [
-                    {
-                      "listen": "test",
-                      "script": {
-                        "exec": [
-                          "let jsonData = JSON.parse(pm.response.text());",
-                          "",
-                          "pm.environment.set(\"par-urn\", jsonData.request_uri);",
-                          "",
-                          "const clientId = pm.environment.get(\"_clientId\");",
-                          "const authEndpoint = pm.environment.get('auth-endpoint');",
-                          "const response_type = pm.environment.get('response_type');",
-                          "const authCodeUrl = `${authEndpoint}?client_id=${clientId}&response_type=${response_type}&scope=openid&request_uri=${jsonData.request_uri}`;",
-                          "",
-                          "pm.environment.set(\"authCodeUrl\", authCodeUrl);",
-                          "",
-                          "if(pm.response.code === 201){",
-                          "var myUrl = utils.splitAndEncodeURL(authCodeUrl)",
-                          "var template = utils.visualizer.qrTemplate1();",
-                          "var data = utils.visualizer.qrData(myUrl);",
-                          "",
-                          "utils.visualizer.draw(pm.visualizer, template, {",
-                          "    response: data",
-                          "})",
-                          "}",
-                          "",
-                          "// encode the url ",
-                          "var responseBody =  authCodeUrl.replace('adcb://uat.mib.pn/auth', pm.environment.get('authEndpoint'))",
-                          "pm.environment.set(\"authCodeUrl\", responseBody);",
-                          ""
-                        ],
-                        "type": "text/javascript",
-                        "packages": {}
-                      }
-                    },
-                    {
-                      "listen": "prerequest",
-                      "script": {
-                        "exec": [
-                          ""
-                        ],
-                        "type": "text/javascript",
-                        "packages": {}
-                      }
-                    }
-                  ],
-                  "request": {
-                    "method": "POST",
-                    "header": [
-                      {
-                        "key": "Content-Type",
-                        "value": "application/x-www-form-urlencoded",
-                        "type": "text"
-                      },
-                      {
-                        "key": "x-cert-dn",
-                        "value": "CN=e14a49e6-8ad4-4dcf-bd2e-85a38fe8752c,OU=233bcd1d-4216-4b3c-a362-9e4a9282bba7,O=RAIDIAM SERVICES LIMITED,C=UK",
-                        "type": "text",
-                        "disabled": true
-                      }
-                    ],
-                    "body": {
-                      "mode": "urlencoded",
-                      "urlencoded": [
-                        {
-                          "key": "client_id",
-                          "value": "{{_clientId}}",
-                          "type": "text"
-                        },
-                        {
-                          "key": "request",
-                          "value": "{{requestObject}}",
-                          "type": "default"
-                        },
-                        {
-                          "key": "client_assertion_type",
-                          "value": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-                          "type": "text"
-                        },
-                        {
-                          "key": "client_assertion",
-                          "value": "{{private_key_jwt}}",
-                          "type": "text"
-                        }
-                      ]
-                    },
-                    "url": {
-                      "raw": "{{par-endpoint}}",
-                      "host": [
-                        "{{par-endpoint}}"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "5004: LFI-API Hub: /auth",
-                  "event": [
-                    {
-                      "listen": "test",
-                      "script": {
-                        "exec": [
-                          "let jsonData = JSON.parse(responseBody);\r",
-                          "pm.environment.set(\"consent-id-from-hh\", jsonData.interaction.consentIdsList[0]);\r",
-                          "pm.environment.set(\"interaction-id\", jsonData.interaction.interactionId);\r",
-                          "var template = `\r",
-                          "<canvas id=\"myChart\" height=\"75\"></canvas>\r",
-                          "\r",
-                          "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js\"></script>\r",
-                          "\r",
-                          "<script>\r",
-                          "    var ctx = document.getElementById(\"myChart\");\r",
-                          "\r",
-                          "    var myChart = new Chart(ctx, {\r",
-                          "        type: \"pie\",\r",
-                          "        data: {\r",
-                          "            labels: [\"Interaction ID\", \"Client ID\", \"Response Type\", \"Scope\", \"Request URI\"],\r",
-                          "            datasets: [{\r",
-                          "                data: [\r",
-                          "                    \"{{response.interaction.interactionId}}\",\r",
-                          "                    \"{{response.interaction.queryParameters.client_id}}\",\r",
-                          "                    \"{{response.interaction.queryParameters.response_type}}\",\r",
-                          "                    \"{{response.interaction.queryParameters.scope}}\",\r",
-                          "                    \"{{response.interaction.queryParameters.request_uri}}\"\r",
-                          "                ],\r",
-                          "                backgroundColor: [\r",
-                          "                    \"#003f5c\",\r",
-                          "                    \"#58508d\",\r",
-                          "                    \"#bc5090\",\r",
-                          "                    \"#ff6361\",\r",
-                          "                    \"#ffa600\"\r",
-                          "                ],\r",
-                          "                borderWidth: 1\r",
-                          "            }]\r",
-                          "        },\r",
-                          "        options: {\r",
-                          "            title: {\r",
-                          "                display: true,\r",
-                          "                text: 'Interaction Details'\r",
-                          "            }\r",
-                          "        }\r",
-                          "    });\r",
-                          "</script>`;\r",
-                          "\r",
-                          "function constructVisualizerPayload() {\r",
-                          "    return { response: pm.response.json() }\r",
-                          "}\r",
-                          "\r",
-                          "pm.visualizer.set(template, constructVisualizerPayload());"
-                        ],
-                        "type": "text/javascript",
-                        "packages": {}
-                      }
-                    }
-                  ],
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": "{{authCodeUrl}}",
-                      "host": [
-                        "{{authCodeUrl}}"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "5015: LFI-API Hub: /consents/{consentId}",
-                  "event": [
-                    {
-                      "listen": "test",
-                      "script": {
-                        "exec": [
-                          "let jsonData = JSON.parse(responseBody);",
-                          "pm.environment.set(\"insurance-base-consent-id\", jsonData.data.consentBody.Data.BaseConsentId);"
-                        ],
-                        "type": "text/javascript",
-                        "packages": {}
-                      }
-                    },
-                    {
-                      "listen": "prerequest",
-                      "script": {
-                        "exec": [
-                          "const uuid = require('uuid');",
-                          "pm.environment.set(\"x-fapi-interaction-id\", uuid.v4());"
-                        ],
-                        "type": "text/javascript",
-                        "packages": {}
-                      }
-                    }
-                  ],
-                  "request": {
-                    "method": "GET",
-                    "header": [
-                      {
-                        "key": "x-cert-dn",
-                        "value": "CN=HQuZPIt3ipkh33Uxytox1E,OU=0015800001041RHAAY,O=OpenBanking,C=GB"
-                      },
-                      {
-                        "key": "x-fapi-interaction-id",
-                        "value": "{{x-fapi-interaction-id}}",
-                        "type": "text"
-                      }
-                    ],
-                    "url": {
-                      "raw": "{{cs}}/v2025.32/consents/{{consent-id-from-hh}}",
-                      "host": [
-                        "{{cs}}"
-                      ],
-                      "path": [
-                        "v2025.32",
-                        "consents",
-                        "{{consent-id-from-hh}}"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "6005: LFI-API Hub: /consents/{consentId}",
+                  "name": "xxxx: LFI-API Hub: Revoke by consent Id",
                   "event": [
                     {
                       "listen": "test",
@@ -54555,208 +54018,10 @@
                           ""
                         ],
                         "type": "text/javascript",
-                        "packages": {}
+                        "packages": {},
+                        "requests": {}
                       }
                     },
-                    {
-                      "listen": "prerequest",
-                      "script": {
-                        "exec": [
-                          "const uuid = require('uuid');",
-                          "pm.environment.set(\"x-fapi-interaction-id\", uuid.v4());"
-                        ],
-                        "type": "text/javascript",
-                        "packages": {}
-                      }
-                    }
-                  ],
-                  "request": {
-                    "method": "PATCH",
-                    "header": [
-                      {
-                        "key": "Authorization",
-                        "value": "Basic eyJhbGciOiJQUzI1NiIsInR5cCI6IkpPU0UiLCJjdHkiOiJqc29uIiwia2lkIjoiZVVmdDNhNTV1OEhBOHZ5bkhsNWVPSWpBcTRUWUUtRXpwRHQ2WWx4Sm12OCJ9.eyJpc3MiOiJPcGVuQmFua2luZyIsInN1YiI6IjAwMTU4MDAwMDEwNDFSSEFBWSIsImF1ZCI6ImF1ZCIsImV4cCI6MTYwOTEyMDk3Ni42MDUsImlhdCI6MTYwOTEyMDk2Ni42MDUsIm5iZiI6MTYwOTEyMDk2Ni42MDUsImp0aSI6ImEyOWQxYTMzLTQ5NTktNDExNy05MzQyLWMxZTQzYTc4OWZlMiJ9.QPQwKBBZ8zFflfT9l1NPs0L_VCfkN49p2t_GKlD6fvw1NkbjX3SxLaox-jlgNhn900tAc5cLw15GGfP9NxJssC4etOoDJgJaVMnS0ZqmujUk8V45CIx5ApLDCtHPxL6uzZSbKzTs7aLzeRFXWOoqOfC-VA3s7nohssyj7MyIWqz_KDwZ2jYuq9Ym3dael2fKEuzgoAHugPGhrqXIkgVVO9lCuitNhWbaBwBhkk45Gp2VPYRFHrBHH8gXtKUk7DkQTv2xw3S4swmSD4Bmb4L1RYIHceGB2V39kGVLc3GltIRYFBSbXUwmlMyAv5GjY1E0UVJ7sSZzSh97A2i8SZuenA",
-                        "disabled": true
-                      },
-                      {
-                        "key": "content-type",
-                        "value": "application/json"
-                      },
-                      {
-                        "key": "x-fapi-interaction-id",
-                        "value": "{{x-fapi-interaction-id}}",
-                        "type": "text"
-                      }
-                    ],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\r\n    \"psuIdentifiers\": {\r\n        \"userId\": \"{{userId}}\"\r\n    },\r\n    \"accountIds\": [\r\n        \"100004000000000000000001\",\r\n        \"100004000000000000000002\",\r\n        \"100004000000000000000003\",\r\n        \"100004000000000000000004\",\r\n        \"100004000000000000000005\"\r\n    ],\r\n    \"authorizationChannel\": \"Web\",\r\n    // \"consentBody.Data.OpenFinanceBilling.IsLargeCorporate\": true,\r\n    \"consentBody.Data.Status\": \"Authorized\"\r\n}"
-                    },
-                    "url": {
-                      "raw": "{{cs}}/v2025.32/consents/{{ins-consent-id-from-hh}}",
-                      "host": [
-                        "{{cs}}"
-                      ],
-                      "path": [
-                        "v2025.32",
-                        "consents",
-                        "{{ins-consent-id-from-hh}}"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "O3 Util: Prepare private key JWT",
-                  "event": [
-                    {
-                      "listen": "prerequest",
-                      "script": {
-                        "exec": [
-                          "pm.environment.set(\"exp\", Date.now() / 1000 + 300);",
-                          "pm.environment.set(\"nbf\", (Date.now() / 1000) - 10);",
-                          "const uuid = require('uuid');"
-                        ],
-                        "type": "text/javascript"
-                      }
-                    },
-                    {
-                      "listen": "test",
-                      "script": {
-                        "exec": [
-                          "pm.environment.set(\"private_key_jwt\", responseBody);"
-                        ],
-                        "type": "text/javascript"
-                      }
-                    }
-                  ],
-                  "protocolProfileBehavior": {
-                    "disableBodyPruning": true
-                  },
-                  "request": {
-                    "method": "GET",
-                    "header": [
-                      {
-                        "key": "content-type",
-                        "value": "application/json",
-                        "type": "default"
-                      }
-                    ],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"header\": {\n        \"alg\": \"PS256\",\n        \"kid\": \"{{kid-local}}\"\n    },\n    \"body\": {\n        \"aud\": \"{{issuer}}\",\n        \"exp\": {{exp}},\n        \"iss\": \"{{_clientId}}\",\n        \"sub\": \"{{_clientId}}\",\n        \"jti\": \"{{$guid}}\",\n        \"iat\": {{nbf}}\n    },\n    \"signingKeyPEM\": \"{{pem-local}}\"\n}"
-                    },
-                    "url": {
-                      "raw": "{{rs}}/o3/v1.0/message-signature",
-                      "host": [
-                        "{{rs}}"
-                      ],
-                      "path": [
-                        "o3",
-                        "v1.0",
-                        "message-signature"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "xxxx: TPP-O3: Client Credential Grant",
-                  "event": [
-                    {
-                      "listen": "test",
-                      "script": {
-                        "exec": [
-                          "let jsonData = JSON.parse(responseBody);",
-                          "pm.environment.set(\"token-from-client-credentials-grant-private-key-jwt\", jsonData.access_token);",
-                          "pm.environment.set(\"refresh_token\", jsonData.refresh_token);"
-                        ],
-                        "type": "text/javascript",
-                        "packages": {}
-                      }
-                    }
-                  ],
-                  "request": {
-                    "method": "POST",
-                    "header": [
-                      {
-                        "key": "Content-Type",
-                        "value": "application/x-www-form-urlencoded"
-                      },
-                      {
-                        "key": "Authorization",
-                        "value": "Basic {{basicToken}}",
-                        "disabled": true
-                      },
-                      {
-                        "key": "x-cert-dn",
-                        "value": "CN=e14a49e6-8ad4-4dcf-bd2e-85a38fe8752c,OU=233bcd1d-4216-4b3c-a362-9e4a9282bba7,O=RAIDIAM SERVICES LIMITED,C=UK",
-                        "type": "text",
-                        "disabled": true
-                      }
-                    ],
-                    "body": {
-                      "mode": "urlencoded",
-                      "urlencoded": [
-                        {
-                          "key": "grant_type",
-                          "value": "client_credentials",
-                          "type": "text"
-                        },
-                        {
-                          "key": "scope",
-                          "value": "openid insurances",
-                          "type": "text"
-                        },
-                        {
-                          "key": "code",
-                          "value": "{{authorizationCode}}",
-                          "type": "text",
-                          "disabled": true
-                        },
-                        {
-                          "key": "redirect_uri",
-                          "value": "{{redirectUrl}}",
-                          "type": "text",
-                          "disabled": true
-                        },
-                        {
-                          "key": "code_verifier",
-                          "value": "{{code-verifier}}",
-                          "type": "default",
-                          "disabled": true
-                        },
-                        {
-                          "key": "client_assertion_type",
-                          "value": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-                          "type": "text"
-                        },
-                        {
-                          "key": "client_assertion",
-                          "value": "{{private_key_jwt}}",
-                          "type": "text"
-                        },
-                        {
-                          "key": "",
-                          "value": "",
-                          "type": "text",
-                          "disabled": true
-                        }
-                      ]
-                    },
-                    "url": {
-                      "raw": "{{tokenEndpoint}}",
-                      "host": [
-                        "{{tokenEndpoint}}"
-                      ]
-                    },
-                    "description": "Copy the authorization code generated into the browser into the **Body** tab in the `code` parameter"
-                  },
-                  "response": []
-                },
-                {
-                  "name": "xxxx: TPP-API Hub: PATCH consents",
-                  "event": [
                     {
                       "listen": "prerequest",
                       "script": {
@@ -54767,14 +54032,862 @@
                           "pm.environment.set(\"x-fapi-interaction-id\", uuid.v4());"
                         ],
                         "type": "text/javascript",
-                        "packages": {}
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text",
+                        "disabled": true
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token-from-client-credentials-grant-private-key-jwt}}",
+                        "type": "text",
+                        "disabled": true
+                      },
+                      {
+                        "key": "x-fapi-interaction-id",
+                        "value": "{{x-fapi-interaction-id}}",
+                        "type": "text",
+                        "disabled": true
+                      },
+                      {
+                        "key": "x-cert-dn",
+                        "value": "CN=e14a49e6-8ad4-4dcf-bd2e-85a38fe8752c,OU=233bcd1d-4216-4b3c-a362-9e4a9282bba7,O=RAIDIAM SERVICES LIMITED,C=UK",
+                        "type": "text",
+                        "disabled": true
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"revokedBy\": \"LFI\",\n  \"revokedByPsu\": {\n    \"userId\": \"{{userId}}\"\n  }\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
                       }
                     },
+                    "url": {
+                      "raw": "{{cs}}/v2025.47/consents/{{ins-consent-id-from-hh}}/action/revoke",
+                      "host": [
+                        "{{cs}}"
+                      ],
+                      "path": [
+                        "v2025.47",
+                        "consents",
+                        "{{ins-consent-id-from-hh}}",
+                        "action",
+                        "revoke"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "xxxx: LFI-API Hub: Revoke consent by consentGroupId",
+                  "event": [
                     {
                       "listen": "test",
                       "script": {
                         "exec": [
-                          " "
+                          ""
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "// set uuid and time",
+                          "pm.environment.set(\"now\", (new Date()).toUTCString());",
+                          "const uuid = require('uuid');",
+                          "pm.environment.set(\"x-fapi-interaction-id\", uuid.v4());"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "disabled": true
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token-from-client-credentials-grant-private-key-jwt}}",
+                        "disabled": true
+                      },
+                      {
+                        "key": "x-fapi-interaction-id",
+                        "value": "{{x-fapi-interaction-id}}",
+                        "disabled": true
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"revokedBy\": \"LFI\",\n    \"revokedByPsu\": {\n        \"userId\": \"{{userId}}\"\n    }\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{cs}}/v2025.47/consent-groups/{{insurance-base-consent-id}}/consents/action/revoke",
+                      "host": [
+                        "{{cs}}"
+                      ],
+                      "path": [
+                        "v2025.47",
+                        "consent-groups",
+                        "{{insurance-base-consent-id}}",
+                        "consents",
+                        "action",
+                        "revoke"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Webhook",
+              "item": [
+                {
+                  "name": "Webhook-TPP",
+                  "item": [
+                    {
+                      "name": "O3 Util: Prepare request object JWT for PAR end-point",
+                      "event": [
+                        {
+                          "listen": "prerequest",
+                          "script": {
+                            "exec": [
+                              "pm.environment.set(\"exp\", Date.now() / 1000 + 60);",
+                              "pm.environment.set(\"nbf\", (Date.now() / 1000) - 10);",
+                              "",
+                              "const uuid = require('uuid');",
+                              "",
+                              "const codeVerifier = uuid.v4() + uuid.v4();",
+                              "",
+                              "const hashedCodeVerifier = CryptoJS.SHA256(codeVerifier);",
+                              "let codeChallenge = CryptoJS.enc.Base64.stringify(hashedCodeVerifier);",
+                              "",
+                              "console.log(codeVerifier);",
+                              "console.log(hashedCodeVerifier);",
+                              "console.log(codeChallenge);",
+                              "codeChallenge = codeChallenge.replaceAll('+', '-');",
+                              "codeChallenge = codeChallenge.replaceAll('/', '_');",
+                              "if (codeChallenge.endsWith('=')) { codeChallenge = codeChallenge.substring(0, codeChallenge.length - 1)}",
+                              "console.log(codeChallenge);",
+                              "",
+                              "pm.environment.set(\"code-challenge\", codeChallenge );",
+                              "pm.environment.set(\"code-verifier\", codeVerifier );"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {}
+                          }
+                        },
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              "pm.test(\"Response is valid\", function () {",
+                              "    pm.response.to.have.status(200);",
+                              "    if (pm.response.code === 200) {",
+                              "        pm.environment.set(\"requestObject\", responseBody);",
+                              "    }",
+                              "});",
+                              "",
+                              "",
+                              "var a = responseBody.split('.');",
+                              "var words = CryptoJS.enc.Base64.parse(a[1]);",
+                              "var bodyData = CryptoJS.enc.Utf8.stringify(words);",
+                              "console.log(bodyData);",
+                              "var jsonData = JSON.parse(bodyData);",
+                              "console.log(jsonData);",
+                              "",
+                              "pm.environment.set(\"response_type\", jsonData.response_type);",
+                              "pm.environment.set(\"scope\", jsonData.scope);",
+                              "",
+                              "pm.environment.set(\"insurance-base-consent-id\", jsonData.authorization_details[0].consent.ConsentId);",
+                              "pm.environment.set(\"ins-consent-id-from-hh\", jsonData.authorization_details[0].consent.ConsentId);",
+                              "",
+                              ""
+                            ],
+                            "type": "text/javascript",
+                            "packages": {}
+                          }
+                        }
+                      ],
+                      "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                      },
+                      "request": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "content-type",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"header\": {\n        \"alg\": \"PS256\",\n        \"kid\": \"{{kid-local}}\"\n    },\n    \"body\": {\n        \"aud\": \"{{issuer}}\",\n        \"exp\": {{exp}},\n        \"iss\": \"{{_clientId}}\",\n        \"scope\": \"insurance openid\",\n        \"redirect_uri\": \"{{redirectUrl}}\",\n        \"client_id\": \"{{_clientId}}\",\n        \"nonce\": \"{{$guid}}\",\n        \"state\": \"{{$guid}}\",\n        \"nbf\": {{nbf}},\n        \"response_type\": \"code\",\n        \"code_challenge_method\": \"S256\",\n        \"code_challenge\": \"{{code-challenge}}\",\n        \"max_age\": 3600,\n        \"authorization_details\": [\n            {\n                \"type\": \"urn:openfinanceuae:insurance-consent:v1.2\",\n                \"consent\": {\n                    \"BaseConsentId\": \"eaa71c98-e0f3-4f08-90a5-21680fd85dad\",\n                    \"ExpirationDateTime\": \"2024-12-25T23:00:00.000Z\",\n                    \"ConsentId\": \"{{$guid}}\",\n                     \"Permissions\": [\n                        \"ReadMotorInsurancePolicies\",\n                        \"ReadMotorInsuranceCustomerBasic\",\n                        \"ReadMotorInsuranceCustomerDetail\",\n                        \"ReadMotorInsuranceProduct\",\n                        \"ReadMotorInsuranceTransactions\",\n                        \"ReadMotorInsuranceCustomerPaymentDetails\"\n                    ],\n                    \"OpenFinanceBilling\": {\n                        \"Purpose\": \"ClaimHistory\"\n                    }\n                },\n                \"subscription\": {\n                    \"Webhook\": {\n                            \"Url\": \"http://localhost:4700/mock-event-receiver\",\n                            \"IsActive\": false\n                        }\n                }\n            }\n        ]\n    },\n    \"signingKeyPEM\": \"{{pem-local}}\"\n}"
+                        },
+                        "url": {
+                          "raw": "{{rs}}/o3/v1.0/message-signature",
+                          "host": [
+                            "{{rs}}"
+                          ],
+                          "path": [
+                            "o3",
+                            "v1.0",
+                            "message-signature"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "O3 Util: Prepare private key JWT for PAR end-point",
+                      "event": [
+                        {
+                          "listen": "prerequest",
+                          "script": {
+                            "exec": [
+                              "pm.environment.set(\"exp\", Date.now() / 1000 + 300);",
+                              "pm.environment.set(\"nbf\", (Date.now() / 1000) - 10);",
+                              "",
+                              "const uuid = require('uuid');",
+                              ""
+                            ],
+                            "type": "text/javascript"
+                          }
+                        },
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              "pm.environment.set(\"private_key_jwt\", responseBody);"
+                            ],
+                            "type": "text/javascript"
+                          }
+                        }
+                      ],
+                      "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                      },
+                      "request": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "content-type",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"header\": {\n        \"alg\": \"PS256\",\n        \"kid\": \"{{kid-local}}\"\n    },\n    \"body\": {\n        \"aud\": \"{{issuer}}\",\n        \"exp\": {{exp}},\n        \"iss\": \"{{_clientId}}\",\n        \"sub\": \"{{_clientId}}\",\n        \"jti\": \"{{$guid}}\",\n        \"iat\": {{nbf}}\n    },\n    \"signingKeyPEM\": \"{{pem-local}}\"\n}"
+                        },
+                        "url": {
+                          "raw": "{{rs}}/o3/v1.0/message-signature",
+                          "host": [
+                            "{{rs}}"
+                          ],
+                          "path": [
+                            "o3",
+                            "v1.0",
+                            "message-signature"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "4000: TPP-API Hub: POST to PAR end-point",
+                      "event": [
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              "let jsonData = JSON.parse(pm.response.text());",
+                              "",
+                              "pm.environment.set(\"par-urn\", jsonData.request_uri);",
+                              "",
+                              "const clientId = pm.environment.get(\"_clientId\");",
+                              "const authEndpoint = pm.environment.get('auth-endpoint');",
+                              "const response_type = pm.environment.get('response_type');",
+                              "const authCodeUrl = `${authEndpoint}?client_id=${clientId}&response_type=${response_type}&scope=openid&request_uri=${jsonData.request_uri}`;",
+                              "",
+                              "pm.environment.set(\"authCodeUrl\", authCodeUrl);",
+                              "",
+                              "if(pm.response.code === 201){",
+                              "var myUrl = utils.splitAndEncodeURL(authCodeUrl)",
+                              "var template = utils.visualizer.qrTemplate1();",
+                              "var data = utils.visualizer.qrData(myUrl);",
+                              "",
+                              "utils.visualizer.draw(pm.visualizer, template, {",
+                              "    response: data",
+                              "})",
+                              "}",
+                              "",
+                              "// encode the url ",
+                              "var responseBody =  authCodeUrl.replace('adcb://uat.mib.pn/auth', pm.environment.get('authEndpoint'))",
+                              "pm.environment.set(\"authCodeUrl\", responseBody);",
+                              ""
+                            ],
+                            "type": "text/javascript",
+                            "packages": {}
+                          }
+                        },
+                        {
+                          "listen": "prerequest",
+                          "script": {
+                            "exec": [
+                              ""
+                            ],
+                            "type": "text/javascript",
+                            "packages": {}
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/x-www-form-urlencoded",
+                            "type": "text"
+                          },
+                          {
+                            "key": "x-cert-dn",
+                            "value": "CN=e14a49e6-8ad4-4dcf-bd2e-85a38fe8752c,OU=233bcd1d-4216-4b3c-a362-9e4a9282bba7,O=RAIDIAM SERVICES LIMITED,C=UK",
+                            "type": "text",
+                            "disabled": true
+                          }
+                        ],
+                        "body": {
+                          "mode": "urlencoded",
+                          "urlencoded": [
+                            {
+                              "key": "client_id",
+                              "value": "{{_clientId}}",
+                              "type": "text"
+                            },
+                            {
+                              "key": "request",
+                              "value": "{{requestObject}}",
+                              "type": "default"
+                            },
+                            {
+                              "key": "client_assertion_type",
+                              "value": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+                              "type": "text"
+                            },
+                            {
+                              "key": "client_assertion",
+                              "value": "{{private_key_jwt}}",
+                              "type": "text"
+                            }
+                          ]
+                        },
+                        "url": {
+                          "raw": "{{par-endpoint}}",
+                          "host": [
+                            "{{par-endpoint}}"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "5004: LFI-API Hub: /auth",
+                      "event": [
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              "let jsonData = JSON.parse(responseBody);\r",
+                              "pm.environment.set(\"consent-id-from-hh\", jsonData.interaction.consentIdsList[0]);\r",
+                              "pm.environment.set(\"interaction-id\", jsonData.interaction.interactionId);\r",
+                              "var template = `\r",
+                              "<canvas id=\"myChart\" height=\"75\"></canvas>\r",
+                              "\r",
+                              "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js\"></script>\r",
+                              "\r",
+                              "<script>\r",
+                              "    var ctx = document.getElementById(\"myChart\");\r",
+                              "\r",
+                              "    var myChart = new Chart(ctx, {\r",
+                              "        type: \"pie\",\r",
+                              "        data: {\r",
+                              "            labels: [\"Interaction ID\", \"Client ID\", \"Response Type\", \"Scope\", \"Request URI\"],\r",
+                              "            datasets: [{\r",
+                              "                data: [\r",
+                              "                    \"{{response.interaction.interactionId}}\",\r",
+                              "                    \"{{response.interaction.queryParameters.client_id}}\",\r",
+                              "                    \"{{response.interaction.queryParameters.response_type}}\",\r",
+                              "                    \"{{response.interaction.queryParameters.scope}}\",\r",
+                              "                    \"{{response.interaction.queryParameters.request_uri}}\"\r",
+                              "                ],\r",
+                              "                backgroundColor: [\r",
+                              "                    \"#003f5c\",\r",
+                              "                    \"#58508d\",\r",
+                              "                    \"#bc5090\",\r",
+                              "                    \"#ff6361\",\r",
+                              "                    \"#ffa600\"\r",
+                              "                ],\r",
+                              "                borderWidth: 1\r",
+                              "            }]\r",
+                              "        },\r",
+                              "        options: {\r",
+                              "            title: {\r",
+                              "                display: true,\r",
+                              "                text: 'Interaction Details'\r",
+                              "            }\r",
+                              "        }\r",
+                              "    });\r",
+                              "</script>`;\r",
+                              "\r",
+                              "function constructVisualizerPayload() {\r",
+                              "    return { response: pm.response.json() }\r",
+                              "}\r",
+                              "\r",
+                              "pm.visualizer.set(template, constructVisualizerPayload());"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {}
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                          "raw": "{{authCodeUrl}}",
+                          "host": [
+                            "{{authCodeUrl}}"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "5015: LFI-API Hub: /consents/{consentId}",
+                      "event": [
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              "let jsonData = JSON.parse(responseBody);",
+                              "pm.environment.set(\"insurance-base-consent-id\", jsonData.data.consentBody.Data.BaseConsentId);"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {}
+                          }
+                        },
+                        {
+                          "listen": "prerequest",
+                          "script": {
+                            "exec": [
+                              "const uuid = require('uuid');",
+                              "pm.environment.set(\"x-fapi-interaction-id\", uuid.v4());"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {}
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "x-cert-dn",
+                            "value": "CN=HQuZPIt3ipkh33Uxytox1E,OU=0015800001041RHAAY,O=OpenBanking,C=GB"
+                          },
+                          {
+                            "key": "x-fapi-interaction-id",
+                            "value": "{{x-fapi-interaction-id}}",
+                            "type": "text"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{cs}}/v2025.32/consents/{{consent-id-from-hh}}",
+                          "host": [
+                            "{{cs}}"
+                          ],
+                          "path": [
+                            "v2025.32",
+                            "consents",
+                            "{{consent-id-from-hh}}"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "6005: LFI-API Hub: /consents/{consentId}",
+                      "event": [
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              ""
+                            ],
+                            "type": "text/javascript",
+                            "packages": {}
+                          }
+                        },
+                        {
+                          "listen": "prerequest",
+                          "script": {
+                            "exec": [
+                              "const uuid = require('uuid');",
+                              "pm.environment.set(\"x-fapi-interaction-id\", uuid.v4());"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {}
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "PATCH",
+                        "header": [
+                          {
+                            "key": "Authorization",
+                            "value": "Basic eyJhbGciOiJQUzI1NiIsInR5cCI6IkpPU0UiLCJjdHkiOiJqc29uIiwia2lkIjoiZVVmdDNhNTV1OEhBOHZ5bkhsNWVPSWpBcTRUWUUtRXpwRHQ2WWx4Sm12OCJ9.eyJpc3MiOiJPcGVuQmFua2luZyIsInN1YiI6IjAwMTU4MDAwMDEwNDFSSEFBWSIsImF1ZCI6ImF1ZCIsImV4cCI6MTYwOTEyMDk3Ni42MDUsImlhdCI6MTYwOTEyMDk2Ni42MDUsIm5iZiI6MTYwOTEyMDk2Ni42MDUsImp0aSI6ImEyOWQxYTMzLTQ5NTktNDExNy05MzQyLWMxZTQzYTc4OWZlMiJ9.QPQwKBBZ8zFflfT9l1NPs0L_VCfkN49p2t_GKlD6fvw1NkbjX3SxLaox-jlgNhn900tAc5cLw15GGfP9NxJssC4etOoDJgJaVMnS0ZqmujUk8V45CIx5ApLDCtHPxL6uzZSbKzTs7aLzeRFXWOoqOfC-VA3s7nohssyj7MyIWqz_KDwZ2jYuq9Ym3dael2fKEuzgoAHugPGhrqXIkgVVO9lCuitNhWbaBwBhkk45Gp2VPYRFHrBHH8gXtKUk7DkQTv2xw3S4swmSD4Bmb4L1RYIHceGB2V39kGVLc3GltIRYFBSbXUwmlMyAv5GjY1E0UVJ7sSZzSh97A2i8SZuenA",
+                            "disabled": true
+                          },
+                          {
+                            "key": "content-type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "x-fapi-interaction-id",
+                            "value": "{{x-fapi-interaction-id}}",
+                            "type": "text"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"psuIdentifiers\": {\r\n        \"userId\": \"{{userId}}\"\r\n    },\r\n    \"accountIds\": [\r\n        \"100004000000000000000001\",\r\n        \"100004000000000000000002\",\r\n        \"100004000000000000000003\",\r\n        \"100004000000000000000004\",\r\n        \"100004000000000000000005\"\r\n    ],\r\n    \"authorizationChannel\": \"Web\",\r\n    // \"consentBody.Data.OpenFinanceBilling.IsLargeCorporate\": true,\r\n    \"consentBody.Data.Status\": \"Authorized\"\r\n}"
+                        },
+                        "url": {
+                          "raw": "{{cs}}/v2025.32/consents/{{ins-consent-id-from-hh}}",
+                          "host": [
+                            "{{cs}}"
+                          ],
+                          "path": [
+                            "v2025.32",
+                            "consents",
+                            "{{ins-consent-id-from-hh}}"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "O3 Util: Prepare private key JWT",
+                      "event": [
+                        {
+                          "listen": "prerequest",
+                          "script": {
+                            "exec": [
+                              "pm.environment.set(\"exp\", Date.now() / 1000 + 300);",
+                              "pm.environment.set(\"nbf\", (Date.now() / 1000) - 10);",
+                              "const uuid = require('uuid');"
+                            ],
+                            "type": "text/javascript"
+                          }
+                        },
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              "pm.environment.set(\"private_key_jwt\", responseBody);"
+                            ],
+                            "type": "text/javascript"
+                          }
+                        }
+                      ],
+                      "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                      },
+                      "request": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "content-type",
+                            "value": "application/json",
+                            "type": "default"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"header\": {\n        \"alg\": \"PS256\",\n        \"kid\": \"{{kid-local}}\"\n    },\n    \"body\": {\n        \"aud\": \"{{issuer}}\",\n        \"exp\": {{exp}},\n        \"iss\": \"{{_clientId}}\",\n        \"sub\": \"{{_clientId}}\",\n        \"jti\": \"{{$guid}}\",\n        \"iat\": {{nbf}}\n    },\n    \"signingKeyPEM\": \"{{pem-local}}\"\n}"
+                        },
+                        "url": {
+                          "raw": "{{rs}}/o3/v1.0/message-signature",
+                          "host": [
+                            "{{rs}}"
+                          ],
+                          "path": [
+                            "o3",
+                            "v1.0",
+                            "message-signature"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "xxxx: TPP-O3: Client Credential Grant",
+                      "event": [
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              "let jsonData = JSON.parse(responseBody);",
+                              "pm.environment.set(\"token-from-client-credentials-grant-private-key-jwt\", jsonData.access_token);",
+                              "pm.environment.set(\"refresh_token\", jsonData.refresh_token);"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {}
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/x-www-form-urlencoded"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Basic {{basicToken}}",
+                            "disabled": true
+                          },
+                          {
+                            "key": "x-cert-dn",
+                            "value": "CN=e14a49e6-8ad4-4dcf-bd2e-85a38fe8752c,OU=233bcd1d-4216-4b3c-a362-9e4a9282bba7,O=RAIDIAM SERVICES LIMITED,C=UK",
+                            "type": "text",
+                            "disabled": true
+                          }
+                        ],
+                        "body": {
+                          "mode": "urlencoded",
+                          "urlencoded": [
+                            {
+                              "key": "grant_type",
+                              "value": "client_credentials",
+                              "type": "text"
+                            },
+                            {
+                              "key": "scope",
+                              "value": "openid insurances",
+                              "type": "text"
+                            },
+                            {
+                              "key": "code",
+                              "value": "{{authorizationCode}}",
+                              "type": "text",
+                              "disabled": true
+                            },
+                            {
+                              "key": "redirect_uri",
+                              "value": "{{redirectUrl}}",
+                              "type": "text",
+                              "disabled": true
+                            },
+                            {
+                              "key": "code_verifier",
+                              "value": "{{code-verifier}}",
+                              "type": "default",
+                              "disabled": true
+                            },
+                            {
+                              "key": "client_assertion_type",
+                              "value": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+                              "type": "text"
+                            },
+                            {
+                              "key": "client_assertion",
+                              "value": "{{private_key_jwt}}",
+                              "type": "text"
+                            },
+                            {
+                              "key": "",
+                              "value": "",
+                              "type": "text",
+                              "disabled": true
+                            }
+                          ]
+                        },
+                        "url": {
+                          "raw": "{{tokenEndpoint}}",
+                          "host": [
+                            "{{tokenEndpoint}}"
+                          ]
+                        },
+                        "description": "Copy the authorization code generated into the browser into the **Body** tab in the `code` parameter"
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "xxxx: TPP-API Hub: PATCH consents",
+                      "event": [
+                        {
+                          "listen": "prerequest",
+                          "script": {
+                            "exec": [
+                              "// set uuid and time",
+                              "pm.environment.set(\"now\", (new Date()).toUTCString());",
+                              "const uuid = require('uuid');",
+                              "pm.environment.set(\"x-fapi-interaction-id\", uuid.v4());"
+                            ],
+                            "type": "text/javascript",
+                            "packages": {}
+                          }
+                        },
+                        {
+                          "listen": "test",
+                          "script": {
+                            "exec": [
+                              " "
+                            ],
+                            "type": "text/javascript",
+                            "packages": {}
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "PATCH",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token-from-client-credentials-grant-private-key-jwt}}"
+                          },
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "x-fapi-interaction-id",
+                            "value": "{{x-fapi-interaction-id}}"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"Data\": {\n        \"Status\": \"Revoked\",\n        \"RevokedBy\": \"TPP\"\n    },\n    \"Subscription\": {\n        \"Webhook\": {\n            \"Url\": \"http://localhost:4700/mock-event-receiver\",\n            \"IsActive\": false\n        }\n    }\n}"
+                        },
+                        "url": {
+                          "raw": "{{rs}}/open-finance/insurance/v1.2/insurance-consents/{{ins-consent-id-from-hh}}",
+                          "host": [
+                            "{{rs}}"
+                          ],
+                          "path": [
+                            "open-finance",
+                            "insurance",
+                            "v1.2",
+                            "insurance-consents",
+                            "{{ins-consent-id-from-hh}}"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Step 4: View received events",
+                      "request": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "o3-aspsp-id",
+                            "value": "o3-aspsp-id",
+                            "type": "text"
+                          },
+                          {
+                            "key": "o3-api-uri",
+                            "value": "o3-api-uri",
+                            "type": "text"
+                          },
+                          {
+                            "key": "o3-api-operation",
+                            "value": "o3-api-operation",
+                            "type": "text"
+                          },
+                          {
+                            "key": "o3-ozone-interaction-id",
+                            "value": "o3-ozone-interaction-id",
+                            "type": "text"
+                          },
+                          {
+                            "key": "Authorization",
+                            "value": "Bearer {{token-from-client-credentials-grant-accounts}}",
+                            "type": "text"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{rs}}/review-emitted-events?minutesInPast=10",
+                          "host": [
+                            "{{rs}}"
+                          ],
+                          "path": [
+                            "review-emitted-events"
+                          ],
+                          "query": [
+                            {
+                              "key": "minutesInPast",
+                              "value": "10"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "Do Fail",
+              "item": [
+                {
+                  "name": "6008: LFI-API Hub: /auth/{interactionId}/doFail",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.environment.set(\"authorizationCode\", responseBody);"
                         ],
                         "type": "text/javascript",
                         "packages": {}
@@ -54782,158 +54895,50 @@
                     }
                   ],
                   "request": {
-                    "method": "PATCH",
-                    "header": [
-                      {
-                        "key": "Accept",
-                        "value": "application/json"
-                      },
-                      {
-                        "key": "Authorization",
-                        "value": "Bearer {{token-from-client-credentials-grant-private-key-jwt}}"
-                      },
-                      {
-                        "key": "Content-Type",
-                        "value": "application/json"
-                      },
-                      {
-                        "key": "x-fapi-interaction-id",
-                        "value": "{{x-fapi-interaction-id}}"
-                      }
-                    ],
+                    "method": "POST",
+                    "header": [],
                     "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"Data\": {\n        \"Status\": \"Revoked\",\n        \"RevokedBy\": \"TPP\"\n    },\n    \"Subscription\": {\n        \"Webhook\": {\n            \"Url\": \"http://localhost:4700/mock-event-receiver\",\n            \"IsActive\": false\n        }\n    }\n}"
+                      "mode": "urlencoded",
+                      "urlencoded": [
+                        {
+                          "key": "heimdall.suppressRefreshToken",
+                          "value": "false",
+                          "type": "text"
+                        },
+                        {
+                          "key": "heimdall.accessTokenValidity",
+                          "value": "3600",
+                          "type": "text",
+                          "disabled": true
+                        },
+                        {
+                          "key": "heimdall.refreshTokenValidity",
+                          "value": "7200",
+                          "type": "text",
+                          "disabled": true
+                        },
+                        {
+                          "key": "openbanking_intent_id",
+                          "value": "{{consent-id-from-hh}}",
+                          "type": "text",
+                          "disabled": true
+                        }
+                      ]
                     },
                     "url": {
-                      "raw": "{{rs}}/open-finance/insurance/v1.2/insurance-consents/{{ins-consent-id-from-hh}}",
+                      "raw": "{{authEndpoint}}/{{interaction-id}}/doFail",
                       "host": [
-                        "{{rs}}"
+                        "{{authEndpoint}}"
                       ],
                       "path": [
-                        "open-finance",
-                        "insurance",
-                        "v1.2",
-                        "insurance-consents",
-                        "{{ins-consent-id-from-hh}}"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Step 4: View received events",
-                  "request": {
-                    "method": "GET",
-                    "header": [
-                      {
-                        "key": "o3-aspsp-id",
-                        "value": "o3-aspsp-id",
-                        "type": "text"
-                      },
-                      {
-                        "key": "o3-api-uri",
-                        "value": "o3-api-uri",
-                        "type": "text"
-                      },
-                      {
-                        "key": "o3-api-operation",
-                        "value": "o3-api-operation",
-                        "type": "text"
-                      },
-                      {
-                        "key": "o3-ozone-interaction-id",
-                        "value": "o3-ozone-interaction-id",
-                        "type": "text"
-                      },
-                      {
-                        "key": "Authorization",
-                        "value": "Bearer {{token-from-client-credentials-grant-accounts}}",
-                        "type": "text"
-                      }
-                    ],
-                    "url": {
-                      "raw": "{{rs}}/review-emitted-events?minutesInPast=10",
-                      "host": [
-                        "{{rs}}"
-                      ],
-                      "path": [
-                        "review-emitted-events"
-                      ],
-                      "query": [
-                        {
-                          "key": "minutesInPast",
-                          "value": "10"
-                        }
+                        "{{interaction-id}}",
+                        "doFail"
                       ]
                     }
                   },
                   "response": []
                 }
               ]
-            }
-          ]
-        },
-        {
-          "name": "Do Fail",
-          "item": [
-            {
-              "name": "6008: LFI-API Hub: /auth/{interactionId}/doFail",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "pm.environment.set(\"authorizationCode\", responseBody);"
-                    ],
-                    "type": "text/javascript",
-                    "packages": {}
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "urlencoded",
-                  "urlencoded": [
-                    {
-                      "key": "heimdall.suppressRefreshToken",
-                      "value": "false",
-                      "type": "text"
-                    },
-                    {
-                      "key": "heimdall.accessTokenValidity",
-                      "value": "3600",
-                      "type": "text",
-                      "disabled": true
-                    },
-                    {
-                      "key": "heimdall.refreshTokenValidity",
-                      "value": "7200",
-                      "type": "text",
-                      "disabled": true
-                    },
-                    {
-                      "key": "openbanking_intent_id",
-                      "value": "{{consent-id-from-hh}}",
-                      "type": "text",
-                      "disabled": true
-                    }
-                  ]
-                },
-                "url": {
-                  "raw": "{{authEndpoint}}/{{interaction-id}}/doFail",
-                  "host": [
-                    "{{authEndpoint}}"
-                  ],
-                  "path": [
-                    "{{interaction-id}}",
-                    "doFail"
-                  ]
-                }
-              },
-              "response": []
             }
           ]
         }
