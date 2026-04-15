@@ -65063,8 +65063,21 @@
                           "script": {
                             "type": "text/javascript",
                             "exec": [
-                              "let jsonData = JSON.parse(responseBody);",
-                              "pm.environment.set(\"quoteId\", jsonData.Data[0].QuoteId);"
+                              "const store = pm.environment.name ? pm.environment : pm.collectionVariables;",
+                              "let msg;",
+                              "try {",
+                              "    msg = JSON.parse(responseBody);",
+                              "} catch (e) {",
+                              "    const payload = responseBody.split('.')[1];",
+                              "    const b64 = payload.replace(/-/g, '+').replace(/_/g, '/');",
+                              "    msg = JSON.parse(atob(b64)).message;",
+                              "}",
+                              "if (msg && msg.Data && msg.Data[0]) {",
+                              "    const quote = msg.Data[0];",
+                              "    store.set('quoteResponse', JSON.stringify(quote));",
+                              "    store.set('quoteId', quote.QuoteId);",
+                              "    if (quote.QuoteReference) store.set('QuoteReference', quote.QuoteReference);",
+                              "}"
                             ]
                           }
                         },
@@ -65073,8 +65086,12 @@
                           "script": {
                             "type": "text/javascript",
                             "exec": [
+                              "const store = pm.environment.name ? pm.environment : pm.collectionVariables;",
+                              "const body = JSON.parse(pm.request.body.raw);",
+                              "store.set('quoteData', JSON.stringify(body.Data));",
+                              "store.set('QuoteReference', body.Data.QuoteReference);",
                               "const uuid = require('uuid');",
-                              "pm.environment.set(\"x-fapi-interaction-id\", uuid.v4());"
+                              "pm.environment.set('x-fapi-interaction-id', uuid.v4());"
                             ]
                           }
                         }
@@ -65149,7 +65166,7 @@
                               "    \"iat\": now,",
                               "    \"exp\": now + 300,",
                               "    \"nbf\": 0,",
-                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": \"QTE-2024-001\",\n            \"QuoteStatus\": \"ApplicationPending\",\n            \"QuoteCreationDateTime\": \"2025-11-17T11:45:52.216158Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"PolicyIssuanceRequest\": {\n                \"CustomerVerification\": true,\n                \"Payment\": false,\n                \"PolicyDocuments\": true\n            },\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2857.14\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"142.86\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"3000.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            }\n        }\n    }",
+                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": (pm.environment.name ? pm.environment : pm.collectionVariables).get('QuoteReference'),\n            \"QuoteStatus\": \"ApplicationPending\",\n            \"QuoteCreationDateTime\": \"2025-11-17T11:45:52.216158Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"PolicyIssuanceRequest\": {\n                \"CustomerVerification\": true,\n                \"Payment\": false,\n                \"PolicyDocuments\": true\n            },\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2857.14\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"142.86\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"3000.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            }\n        }\n    }",
                               "});",
                               "pm.environment.set(\"data\", data1);"
                             ]
@@ -65169,7 +65186,7 @@
                         "disableBodyPruning": true
                       },
                       "request": {
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                           {
                             "key": "content-type",
@@ -65317,7 +65334,7 @@
                               "    \"iat\": now,",
                               "    \"exp\": now + 300,",
                               "    \"nbf\": 0,",
-                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": \"QTE-2024-001\",\n            \"QuoteStatus\": \"KYCCaptured\",\n            \"QuoteCreationDateTime\": \"2025-11-17T11:45:52.216158Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"PolicyIssuanceRequest\": {\n                \"CustomerVerification\": true,\n                \"Payment\": false,\n                \"PolicyDocuments\": true\n            },\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2857.14\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"142.86\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"3000.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            },\n            \"Documents\": [\n                {\n                    \"Type\": \"EmiratesID\",\n                    \"FileName\": \"ahmed_emirates_id.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJcTl8uXrp...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"a3b2c1d4e5f6789012345678901234567890abcdef1234567890abcdef123456\"\n                },\n                {\n                    \"Type\": \"DrivingLicense\",\n                    \"FileName\": \"ahmed_driving_license.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJeLjz9MK...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"b4c3d2e1f6789012345678901234567890abcdef1234567890abcdef234567\"\n                },\n                {\n                    \"Type\": \"VehicleRegistration\",\n                    \"FileName\": \"ahmed_vehicle_registration.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJcfsw7fD...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"c5d4e3f2a1b0987654321098765432109876fedcba0987654321fedcba345678\"\n                }\n            ]\n        }\n    }",
+                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": (pm.environment.name ? pm.environment : pm.collectionVariables).get('QuoteReference'),\n            \"QuoteStatus\": \"KYCCaptured\",\n            \"QuoteCreationDateTime\": \"2025-11-17T11:45:52.216158Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"PolicyIssuanceRequest\": {\n                \"CustomerVerification\": true,\n                \"Payment\": false,\n                \"PolicyDocuments\": true\n            },\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2857.14\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"142.86\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"3000.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            },\n            \"Documents\": [\n                {\n                    \"Type\": \"EmiratesID\",\n                    \"FileName\": \"ahmed_emirates_id.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJcTl8uXrp...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"a3b2c1d4e5f6789012345678901234567890abcdef1234567890abcdef123456\"\n                },\n                {\n                    \"Type\": \"DrivingLicense\",\n                    \"FileName\": \"ahmed_driving_license.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJeLjz9MK...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"b4c3d2e1f6789012345678901234567890abcdef1234567890abcdef234567\"\n                },\n                {\n                    \"Type\": \"VehicleRegistration\",\n                    \"FileName\": \"ahmed_vehicle_registration.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJcfsw7fD...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"c5d4e3f2a1b0987654321098765432109876fedcba0987654321fedcba345678\"\n                }\n            ]\n        }\n    }",
                               "});",
                               "pm.environment.set(\"data\", data1);"
                             ]
@@ -65337,7 +65354,7 @@
                         "disableBodyPruning": true
                       },
                       "request": {
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                           {
                             "key": "content-type",
@@ -65505,7 +65522,7 @@
                         "disableBodyPruning": true
                       },
                       "request": {
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                           {
                             "key": "content-type",
@@ -65805,8 +65822,21 @@
                           "script": {
                             "type": "text/javascript",
                             "exec": [
-                              "let jsonData = JSON.parse(responseBody);",
-                              "pm.environment.set(\"quoteId\", jsonData.Data[0].QuoteId);"
+                              "const store = pm.environment.name ? pm.environment : pm.collectionVariables;",
+                              "let msg;",
+                              "try {",
+                              "    msg = JSON.parse(responseBody);",
+                              "} catch (e) {",
+                              "    const payload = responseBody.split('.')[1];",
+                              "    const b64 = payload.replace(/-/g, '+').replace(/_/g, '/');",
+                              "    msg = JSON.parse(atob(b64)).message;",
+                              "}",
+                              "if (msg && msg.Data && msg.Data[0]) {",
+                              "    const quote = msg.Data[0];",
+                              "    store.set('quoteResponse', JSON.stringify(quote));",
+                              "    store.set('quoteId', quote.QuoteId);",
+                              "    if (quote.QuoteReference) store.set('QuoteReference', quote.QuoteReference);",
+                              "}"
                             ]
                           }
                         },
@@ -65815,8 +65845,12 @@
                           "script": {
                             "type": "text/javascript",
                             "exec": [
+                              "const store = pm.environment.name ? pm.environment : pm.collectionVariables;",
+                              "const body = JSON.parse(pm.request.body.raw);",
+                              "store.set('quoteData', JSON.stringify(body.Data));",
+                              "store.set('QuoteReference', body.Data.QuoteReference);",
                               "const uuid = require('uuid');",
-                              "pm.environment.set(\"x-fapi-interaction-id\", uuid.v4());"
+                              "pm.environment.set('x-fapi-interaction-id', uuid.v4());"
                             ]
                           }
                         }
@@ -65891,7 +65925,7 @@
                               "    \"iat\": now,",
                               "    \"exp\": now + 300,",
                               "    \"nbf\": 0,",
-                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": \"QTE-2024-001\",\n            \"QuoteStatus\": \"ApplicationPending\",\n            \"QuoteCreationDateTime\": \"2025-11-17T11:45:52.216158Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2857.14\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"142.86\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"3000.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            }\n        }\n    }",
+                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": (pm.environment.name ? pm.environment : pm.collectionVariables).get('QuoteReference'),\n            \"QuoteStatus\": \"ApplicationPending\",\n            \"QuoteCreationDateTime\": \"2025-11-17T11:45:52.216158Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2857.14\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"142.86\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"3000.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            }\n        }\n    }",
                               "});",
                               "pm.environment.set(\"data\", data1);"
                             ]
@@ -65911,7 +65945,7 @@
                         "disableBodyPruning": true
                       },
                       "request": {
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                           {
                             "key": "content-type",
@@ -66079,7 +66113,7 @@
                         "disableBodyPruning": true
                       },
                       "request": {
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                           {
                             "key": "content-type",
@@ -66379,8 +66413,21 @@
                           "script": {
                             "type": "text/javascript",
                             "exec": [
-                              "let jsonData = JSON.parse(responseBody);",
-                              "pm.environment.set(\"quoteId\", jsonData.Data[0].QuoteId);"
+                              "const store = pm.environment.name ? pm.environment : pm.collectionVariables;",
+                              "let msg;",
+                              "try {",
+                              "    msg = JSON.parse(responseBody);",
+                              "} catch (e) {",
+                              "    const payload = responseBody.split('.')[1];",
+                              "    const b64 = payload.replace(/-/g, '+').replace(/_/g, '/');",
+                              "    msg = JSON.parse(atob(b64)).message;",
+                              "}",
+                              "if (msg && msg.Data && msg.Data[0]) {",
+                              "    const quote = msg.Data[0];",
+                              "    store.set('quoteResponse', JSON.stringify(quote));",
+                              "    store.set('quoteId', quote.QuoteId);",
+                              "    if (quote.QuoteReference) store.set('QuoteReference', quote.QuoteReference);",
+                              "}"
                             ]
                           }
                         },
@@ -66389,8 +66436,12 @@
                           "script": {
                             "type": "text/javascript",
                             "exec": [
+                              "const store = pm.environment.name ? pm.environment : pm.collectionVariables;",
+                              "const body = JSON.parse(pm.request.body.raw);",
+                              "store.set('quoteData', JSON.stringify(body.Data));",
+                              "store.set('QuoteReference', body.Data.QuoteReference);",
                               "const uuid = require('uuid');",
-                              "pm.environment.set(\"x-fapi-interaction-id\", uuid.v4());"
+                              "pm.environment.set('x-fapi-interaction-id', uuid.v4());"
                             ]
                           }
                         }
@@ -66465,7 +66516,7 @@
                               "    \"iat\": now,",
                               "    \"exp\": now + 300,",
                               "    \"nbf\": 0,",
-                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": \"QTE-2025-020\",\n            \"QuoteStatus\": \"ApplicationPending\",\n            \"QuoteCreationDateTime\": \"2026-03-25T09:00:00.000Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"PolicyIssuanceRequest\": {\n                \"CustomerVerification\": true,\n                \"Payment\": false,\n                \"PolicyDocuments\": true\n            },\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2666.67\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"133.33\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"2800.00\",\n                    \"Currency\": \"AED\"\n                },\n                \"DiscountApplied\": [\n                    {\n                        \"DiscountName\": \"No Claims Discount\",\n                        \"DiscountAmount\": {\n                            \"Amount\": \"200.00\",\n                            \"Currency\": \"AED\"\n                        }\n                    }\n                ],\n                \"TotalDiscountAmount\": {\n                    \"Amount\": \"200.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            }\n        }\n    }",
+                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": (pm.environment.name ? pm.environment : pm.collectionVariables).get('QuoteReference'),\n            \"QuoteStatus\": \"ApplicationPending\",\n            \"QuoteCreationDateTime\": \"2026-03-25T09:00:00.000Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"PolicyIssuanceRequest\": {\n                \"CustomerVerification\": true,\n                \"Payment\": false,\n                \"PolicyDocuments\": true\n            },\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2666.67\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"133.33\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"2800.00\",\n                    \"Currency\": \"AED\"\n                },\n                \"DiscountApplied\": [\n                    {\n                        \"DiscountName\": \"No Claims Discount\",\n                        \"DiscountAmount\": {\n                            \"Amount\": \"200.00\",\n                            \"Currency\": \"AED\"\n                        }\n                    }\n                ],\n                \"TotalDiscountAmount\": {\n                    \"Amount\": \"200.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            }\n        }\n    }",
                               "});",
                               "pm.environment.set(\"data\", data1);"
                             ]
@@ -66485,7 +66536,7 @@
                         "disableBodyPruning": true
                       },
                       "request": {
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                           {
                             "key": "content-type",
@@ -66633,7 +66684,7 @@
                               "    \"iat\": now,",
                               "    \"exp\": now + 300,",
                               "    \"nbf\": 0,",
-                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": \"QTE-2025-020\",\n            \"QuoteStatus\": \"KYCCaptured\",\n            \"QuoteCreationDateTime\": \"2026-03-25T09:00:00.000Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"PolicyIssuanceRequest\": {\n                \"CustomerVerification\": true,\n                \"Payment\": false,\n                \"PolicyDocuments\": true\n            },\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2666.67\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"133.33\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"2800.00\",\n                    \"Currency\": \"AED\"\n                },\n                \"DiscountApplied\": [\n                    {\n                        \"DiscountName\": \"No Claims Discount\",\n                        \"DiscountAmount\": {\n                            \"Amount\": \"200.00\",\n                            \"Currency\": \"AED\"\n                        }\n                    }\n                ],\n                \"TotalDiscountAmount\": {\n                    \"Amount\": \"200.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            },\n            \"Documents\": [\n                {\n                    \"Type\": \"EmiratesID\",\n                    \"FileName\": \"ahmed_emirates_id.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJcTl8uXrp...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"a3b2c1d4e5f6789012345678901234567890abcdef1234567890abcdef123456\"\n                },\n                {\n                    \"Type\": \"DrivingLicense\",\n                    \"FileName\": \"ahmed_driving_license.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJeLjz9MK...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"b4c3d2e1f6789012345678901234567890abcdef1234567890abcdef234567\"\n                },\n                {\n                    \"Type\": \"VehicleRegistration\",\n                    \"FileName\": \"ahmed_vehicle_registration.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJcfsw7fD...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"c5d4e3f2a1b0987654321098765432109876fedcba0987654321fedcba345678\"\n                }\n            ]\n        }\n    }",
+                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": (pm.environment.name ? pm.environment : pm.collectionVariables).get('QuoteReference'),\n            \"QuoteStatus\": \"KYCCaptured\",\n            \"QuoteCreationDateTime\": \"2026-03-25T09:00:00.000Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"PolicyIssuanceRequest\": {\n                \"CustomerVerification\": true,\n                \"Payment\": false,\n                \"PolicyDocuments\": true\n            },\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2666.67\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"133.33\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"2800.00\",\n                    \"Currency\": \"AED\"\n                },\n                \"DiscountApplied\": [\n                    {\n                        \"DiscountName\": \"No Claims Discount\",\n                        \"DiscountAmount\": {\n                            \"Amount\": \"200.00\",\n                            \"Currency\": \"AED\"\n                        }\n                    }\n                ],\n                \"TotalDiscountAmount\": {\n                    \"Amount\": \"200.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            },\n            \"Documents\": [\n                {\n                    \"Type\": \"EmiratesID\",\n                    \"FileName\": \"ahmed_emirates_id.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJcTl8uXrp...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"a3b2c1d4e5f6789012345678901234567890abcdef1234567890abcdef123456\"\n                },\n                {\n                    \"Type\": \"DrivingLicense\",\n                    \"FileName\": \"ahmed_driving_license.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJeLjz9MK...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"b4c3d2e1f6789012345678901234567890abcdef1234567890abcdef234567\"\n                },\n                {\n                    \"Type\": \"VehicleRegistration\",\n                    \"FileName\": \"ahmed_vehicle_registration.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJcfsw7fD...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"c5d4e3f2a1b0987654321098765432109876fedcba0987654321fedcba345678\"\n                }\n            ]\n        }\n    }",
                               "});",
                               "pm.environment.set(\"data\", data1);"
                             ]
@@ -66653,7 +66704,7 @@
                         "disableBodyPruning": true
                       },
                       "request": {
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                           {
                             "key": "content-type",
@@ -66821,7 +66872,7 @@
                         "disableBodyPruning": true
                       },
                       "request": {
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                           {
                             "key": "content-type",
@@ -67121,8 +67172,21 @@
                           "script": {
                             "type": "text/javascript",
                             "exec": [
-                              "let jsonData = JSON.parse(responseBody);",
-                              "pm.environment.set(\"quoteId\", jsonData.Data[0].QuoteId);"
+                              "const store = pm.environment.name ? pm.environment : pm.collectionVariables;",
+                              "let msg;",
+                              "try {",
+                              "    msg = JSON.parse(responseBody);",
+                              "} catch (e) {",
+                              "    const payload = responseBody.split('.')[1];",
+                              "    const b64 = payload.replace(/-/g, '+').replace(/_/g, '/');",
+                              "    msg = JSON.parse(atob(b64)).message;",
+                              "}",
+                              "if (msg && msg.Data && msg.Data[0]) {",
+                              "    const quote = msg.Data[0];",
+                              "    store.set('quoteResponse', JSON.stringify(quote));",
+                              "    store.set('quoteId', quote.QuoteId);",
+                              "    if (quote.QuoteReference) store.set('QuoteReference', quote.QuoteReference);",
+                              "}"
                             ]
                           }
                         },
@@ -67131,8 +67195,12 @@
                           "script": {
                             "type": "text/javascript",
                             "exec": [
+                              "const store = pm.environment.name ? pm.environment : pm.collectionVariables;",
+                              "const body = JSON.parse(pm.request.body.raw);",
+                              "store.set('quoteData', JSON.stringify(body.Data));",
+                              "store.set('QuoteReference', body.Data.QuoteReference);",
                               "const uuid = require('uuid');",
-                              "pm.environment.set(\"x-fapi-interaction-id\", uuid.v4());"
+                              "pm.environment.set('x-fapi-interaction-id', uuid.v4());"
                             ]
                           }
                         }
@@ -67207,7 +67275,7 @@
                               "    \"iat\": now,",
                               "    \"exp\": now + 300,",
                               "    \"nbf\": 0,",
-                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": \"QTE-2025-020\",\n            \"QuoteStatus\": \"ApplicationPending\",\n            \"QuoteCreationDateTime\": \"2026-03-25T09:00:00.000Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2666.67\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"133.33\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"2800.00\",\n                    \"Currency\": \"AED\"\n                },\n                \"DiscountApplied\": [\n                    {\n                        \"DiscountName\": \"No Claims Discount\",\n                        \"DiscountAmount\": {\n                            \"Amount\": \"200.00\",\n                            \"Currency\": \"AED\"\n                        }\n                    }\n                ],\n                \"TotalDiscountAmount\": {\n                    \"Amount\": \"200.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            }\n        }\n    }",
+                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": (pm.environment.name ? pm.environment : pm.collectionVariables).get('QuoteReference'),\n            \"QuoteStatus\": \"ApplicationPending\",\n            \"QuoteCreationDateTime\": \"2026-03-25T09:00:00.000Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2666.67\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"133.33\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"2800.00\",\n                    \"Currency\": \"AED\"\n                },\n                \"DiscountApplied\": [\n                    {\n                        \"DiscountName\": \"No Claims Discount\",\n                        \"DiscountAmount\": {\n                            \"Amount\": \"200.00\",\n                            \"Currency\": \"AED\"\n                        }\n                    }\n                ],\n                \"TotalDiscountAmount\": {\n                    \"Amount\": \"200.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            }\n        }\n    }",
                               "});",
                               "pm.environment.set(\"data\", data1);"
                             ]
@@ -67227,7 +67295,7 @@
                         "disableBodyPruning": true
                       },
                       "request": {
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                           {
                             "key": "content-type",
@@ -67395,7 +67463,7 @@
                         "disableBodyPruning": true
                       },
                       "request": {
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                           {
                             "key": "content-type",
@@ -67695,8 +67763,21 @@
                           "script": {
                             "type": "text/javascript",
                             "exec": [
-                              "let jsonData = JSON.parse(responseBody);",
-                              "pm.environment.set(\"quoteId\", jsonData.Data[0].QuoteId);"
+                              "const store = pm.environment.name ? pm.environment : pm.collectionVariables;",
+                              "let msg;",
+                              "try {",
+                              "    msg = JSON.parse(responseBody);",
+                              "} catch (e) {",
+                              "    const payload = responseBody.split('.')[1];",
+                              "    const b64 = payload.replace(/-/g, '+').replace(/_/g, '/');",
+                              "    msg = JSON.parse(atob(b64)).message;",
+                              "}",
+                              "if (msg && msg.Data && msg.Data[0]) {",
+                              "    const quote = msg.Data[0];",
+                              "    store.set('quoteResponse', JSON.stringify(quote));",
+                              "    store.set('quoteId', quote.QuoteId);",
+                              "    if (quote.QuoteReference) store.set('QuoteReference', quote.QuoteReference);",
+                              "}"
                             ]
                           }
                         },
@@ -67705,8 +67786,12 @@
                           "script": {
                             "type": "text/javascript",
                             "exec": [
+                              "const store = pm.environment.name ? pm.environment : pm.collectionVariables;",
+                              "const body = JSON.parse(pm.request.body.raw);",
+                              "store.set('quoteData', JSON.stringify(body.Data));",
+                              "store.set('QuoteReference', body.Data.QuoteReference);",
                               "const uuid = require('uuid');",
-                              "pm.environment.set(\"x-fapi-interaction-id\", uuid.v4());"
+                              "pm.environment.set('x-fapi-interaction-id', uuid.v4());"
                             ]
                           }
                         }
@@ -67781,7 +67866,7 @@
                               "    \"iat\": now,",
                               "    \"exp\": now + 300,",
                               "    \"nbf\": 0,",
-                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": \"QTE-BROKERB-2026-001\",\n            \"QuoteStatus\": \"ApplicationPending\",\n            \"QuoteCreationDateTime\": \"2026-03-25T09:30:00.000Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"PolicyIssuanceRequest\": {\n                \"CustomerVerification\": true,\n                \"Payment\": false,\n                \"PolicyDocuments\": true\n            },\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2476.19\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"123.81\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"2600.00\",\n                    \"Currency\": \"AED\"\n                },\n                \"DiscountApplied\": [\n                    {\n                        \"DiscountName\": \"Loyalty Discount\",\n                        \"DiscountAmount\": {\n                            \"Amount\": \"400.00\",\n                            \"Currency\": \"AED\"\n                        }\n                    }\n                ],\n                \"TotalDiscountAmount\": {\n                    \"Amount\": \"400.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            }\n        }\n    }",
+                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": (pm.environment.name ? pm.environment : pm.collectionVariables).get('QuoteReference'),\n            \"QuoteStatus\": \"ApplicationPending\",\n            \"QuoteCreationDateTime\": \"2026-03-25T09:30:00.000Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"PolicyIssuanceRequest\": {\n                \"CustomerVerification\": true,\n                \"Payment\": false,\n                \"PolicyDocuments\": true\n            },\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2476.19\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"123.81\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"2600.00\",\n                    \"Currency\": \"AED\"\n                },\n                \"DiscountApplied\": [\n                    {\n                        \"DiscountName\": \"Loyalty Discount\",\n                        \"DiscountAmount\": {\n                            \"Amount\": \"400.00\",\n                            \"Currency\": \"AED\"\n                        }\n                    }\n                ],\n                \"TotalDiscountAmount\": {\n                    \"Amount\": \"400.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            }\n        }\n    }",
                               "});",
                               "pm.environment.set(\"data\", data1);"
                             ]
@@ -67801,7 +67886,7 @@
                         "disableBodyPruning": true
                       },
                       "request": {
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                           {
                             "key": "content-type",
@@ -67949,7 +68034,7 @@
                               "    \"iat\": now,",
                               "    \"exp\": now + 300,",
                               "    \"nbf\": 0,",
-                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": \"QTE-BROKERB-2026-001\",\n            \"QuoteStatus\": \"KYCCaptured\",\n            \"QuoteCreationDateTime\": \"2026-03-25T09:30:00.000Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"PolicyIssuanceRequest\": {\n                \"CustomerVerification\": true,\n                \"Payment\": false,\n                \"PolicyDocuments\": true\n            },\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2476.19\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"123.81\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"2600.00\",\n                    \"Currency\": \"AED\"\n                },\n                \"DiscountApplied\": [\n                    {\n                        \"DiscountName\": \"Loyalty Discount\",\n                        \"DiscountAmount\": {\n                            \"Amount\": \"400.00\",\n                            \"Currency\": \"AED\"\n                        }\n                    }\n                ],\n                \"TotalDiscountAmount\": {\n                    \"Amount\": \"400.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            },\n            \"Documents\": [\n                {\n                    \"Type\": \"EmiratesID\",\n                    \"FileName\": \"ahmed_emirates_id.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJcTl8uXrp...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"a3b2c1d4e5f6789012345678901234567890abcdef1234567890abcdef123456\"\n                },\n                {\n                    \"Type\": \"DrivingLicense\",\n                    \"FileName\": \"ahmed_driving_license.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJeLjz9MK...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"b4c3d2e1f6789012345678901234567890abcdef1234567890abcdef234567\"\n                },\n                {\n                    \"Type\": \"VehicleRegistration\",\n                    \"FileName\": \"ahmed_vehicle_registration.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJcfsw7fD...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"c5d4e3f2a1b0987654321098765432109876fedcba0987654321fedcba345678\"\n                }\n            ]\n        }\n    }",
+                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": (pm.environment.name ? pm.environment : pm.collectionVariables).get('QuoteReference'),\n            \"QuoteStatus\": \"KYCCaptured\",\n            \"QuoteCreationDateTime\": \"2026-03-25T09:30:00.000Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"PolicyIssuanceRequest\": {\n                \"CustomerVerification\": true,\n                \"Payment\": false,\n                \"PolicyDocuments\": true\n            },\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2476.19\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"123.81\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"2600.00\",\n                    \"Currency\": \"AED\"\n                },\n                \"DiscountApplied\": [\n                    {\n                        \"DiscountName\": \"Loyalty Discount\",\n                        \"DiscountAmount\": {\n                            \"Amount\": \"400.00\",\n                            \"Currency\": \"AED\"\n                        }\n                    }\n                ],\n                \"TotalDiscountAmount\": {\n                    \"Amount\": \"400.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            },\n            \"Documents\": [\n                {\n                    \"Type\": \"EmiratesID\",\n                    \"FileName\": \"ahmed_emirates_id.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJcTl8uXrp...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"a3b2c1d4e5f6789012345678901234567890abcdef1234567890abcdef123456\"\n                },\n                {\n                    \"Type\": \"DrivingLicense\",\n                    \"FileName\": \"ahmed_driving_license.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJeLjz9MK...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"b4c3d2e1f6789012345678901234567890abcdef1234567890abcdef234567\"\n                },\n                {\n                    \"Type\": \"VehicleRegistration\",\n                    \"FileName\": \"ahmed_vehicle_registration.pdf\",\n                    \"ContentType\": \"application/pdf\",\n                    \"Content\": \"JVBERi0xLjQKJcfsw7fD...\",\n                    \"HashType\": \"SHA256\",\n                    \"Hash\": \"c5d4e3f2a1b0987654321098765432109876fedcba0987654321fedcba345678\"\n                }\n            ]\n        }\n    }",
                               "});",
                               "pm.environment.set(\"data\", data1);"
                             ]
@@ -67969,7 +68054,7 @@
                         "disableBodyPruning": true
                       },
                       "request": {
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                           {
                             "key": "content-type",
@@ -68137,7 +68222,7 @@
                         "disableBodyPruning": true
                       },
                       "request": {
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                           {
                             "key": "content-type",
@@ -68437,8 +68522,21 @@
                           "script": {
                             "type": "text/javascript",
                             "exec": [
-                              "let jsonData = JSON.parse(responseBody);",
-                              "pm.environment.set(\"quoteId\", jsonData.Data[0].QuoteId);"
+                              "const store = pm.environment.name ? pm.environment : pm.collectionVariables;",
+                              "let msg;",
+                              "try {",
+                              "    msg = JSON.parse(responseBody);",
+                              "} catch (e) {",
+                              "    const payload = responseBody.split('.')[1];",
+                              "    const b64 = payload.replace(/-/g, '+').replace(/_/g, '/');",
+                              "    msg = JSON.parse(atob(b64)).message;",
+                              "}",
+                              "if (msg && msg.Data && msg.Data[0]) {",
+                              "    const quote = msg.Data[0];",
+                              "    store.set('quoteResponse', JSON.stringify(quote));",
+                              "    store.set('quoteId', quote.QuoteId);",
+                              "    if (quote.QuoteReference) store.set('QuoteReference', quote.QuoteReference);",
+                              "}"
                             ]
                           }
                         },
@@ -68447,8 +68545,12 @@
                           "script": {
                             "type": "text/javascript",
                             "exec": [
+                              "const store = pm.environment.name ? pm.environment : pm.collectionVariables;",
+                              "const body = JSON.parse(pm.request.body.raw);",
+                              "store.set('quoteData', JSON.stringify(body.Data));",
+                              "store.set('QuoteReference', body.Data.QuoteReference);",
                               "const uuid = require('uuid');",
-                              "pm.environment.set(\"x-fapi-interaction-id\", uuid.v4());"
+                              "pm.environment.set('x-fapi-interaction-id', uuid.v4());"
                             ]
                           }
                         }
@@ -68523,7 +68625,7 @@
                               "    \"iat\": now,",
                               "    \"exp\": now + 300,",
                               "    \"nbf\": 0,",
-                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": \"QTE-BROKERB-2026-001\",\n            \"QuoteStatus\": \"ApplicationPending\",\n            \"QuoteCreationDateTime\": \"2026-03-25T09:30:00.000Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2476.19\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"123.81\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"2600.00\",\n                    \"Currency\": \"AED\"\n                },\n                \"DiscountApplied\": [\n                    {\n                        \"DiscountName\": \"Loyalty Discount\",\n                        \"DiscountAmount\": {\n                            \"Amount\": \"400.00\",\n                            \"Currency\": \"AED\"\n                        }\n                    }\n                ],\n                \"TotalDiscountAmount\": {\n                    \"Amount\": \"400.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            }\n        }\n    }",
+                              "    \"message\": {\n        \"Data\": {\n            \"QuoteReference\": (pm.environment.name ? pm.environment : pm.collectionVariables).get('QuoteReference'),\n            \"QuoteStatus\": \"ApplicationPending\",\n            \"QuoteCreationDateTime\": \"2026-03-25T09:30:00.000Z\",\n            \"InsuranceSubType\": \"Comprehensive Basic\",\n            \"Premium\": {\n                \"PaymentFrequency\": \"OneTime\",\n                \"PremiumAmountExcludingVAT\": {\n                    \"Amount\": \"2476.19\",\n                    \"Currency\": \"AED\"\n                },\n                \"VATAmount\": {\n                    \"Amount\": \"123.81\",\n                    \"Currency\": \"AED\"\n                },\n                \"TotalPremiumAmount\": {\n                    \"Amount\": \"2600.00\",\n                    \"Currency\": \"AED\"\n                },\n                \"DiscountApplied\": [\n                    {\n                        \"DiscountName\": \"Loyalty Discount\",\n                        \"DiscountAmount\": {\n                            \"Amount\": \"400.00\",\n                            \"Currency\": \"AED\"\n                        }\n                    }\n                ],\n                \"TotalDiscountAmount\": {\n                    \"Amount\": \"400.00\",\n                    \"Currency\": \"AED\"\n                }\n            },\n            \"Commission\": {\n                \"PaymentMethod\": \"ThroughAPIHub\"\n            }\n        }\n    }",
                               "});",
                               "pm.environment.set(\"data\", data1);"
                             ]
@@ -68543,7 +68645,7 @@
                         "disableBodyPruning": true
                       },
                       "request": {
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                           {
                             "key": "content-type",
@@ -68711,7 +68813,7 @@
                         "disableBodyPruning": true
                       },
                       "request": {
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                           {
                             "key": "content-type",
