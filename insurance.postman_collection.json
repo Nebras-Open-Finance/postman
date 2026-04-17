@@ -216,7 +216,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -3417,7 +3416,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -6618,7 +6616,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -9819,7 +9816,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -13020,7 +13016,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -16221,7 +16216,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -19422,7 +19416,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -22623,7 +22616,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -25824,7 +25816,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -29025,7 +29016,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -32226,7 +32216,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -35424,7 +35413,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -38622,7 +38610,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -41823,7 +41810,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -45024,7 +45010,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -48495,7 +48480,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -52236,7 +52220,6 @@
                               "listen": "prerequest",
                               "script": {
                                 "exec": [
-                                  "const CryptoJS = require('crypto-js');",
                                   "const uuid = require('uuid');",
                                   "",
                                   "pm.environment.set('x-fapi-interaction-id', uuid.v4());",
@@ -88258,7 +88241,7 @@
                         ],
                         "body": {
                           "mode": "raw",
-                          "raw": "{\n    \"header\": {\n        \"alg\": \"PS256\",\n        \"kid\": \"{{kid-local}}\"\n    },\n    \"body\": {\n        \"aud\": \"{{issuer}}\",\n        \"exp\": {{exp}},\n        \"iss\": \"{{_clientId}}\",\n        \"scope\": \"insurance openid\",\n        \"redirect_uri\": \"{{redirectUrl}}\",\n        \"client_id\": \"{{_clientId}}\",\n        \"nonce\": \"{{$guid}}\",\n        \"state\": \"{{$guid}}\",\n        \"nbf\": {{nbf}},\n        \"response_type\": \"code\",\n        \"code_challenge_method\": \"S256\",\n        \"code_challenge\": \"{{code-challenge}}\",\n        \"max_age\": 3600,\n        \"authorization_details\": [\n            {\n                \"type\": \"urn:openfinanceuae:insurance-consent:v1.2\",\n                \"consent\": {\n                    \"BaseConsentId\": \"eaa71c98-e0f3-4f08-90a5-21680fd85dad\",\n                    \"ExpirationDateTime\": \"2024-12-25T23:00:00.000Z\",\n                    \"ConsentId\": \"{{$guid}}\",\n                     \"Permissions\": [\n                        \"ReadMotorInsurancePolicies\",\n                        \"ReadMotorInsuranceCustomerBasic\",\n                        \"ReadMotorInsuranceCustomerDetail\",\n                        \"ReadMotorInsuranceProduct\",\n                        \"ReadMotorInsuranceTransactions\",\n                        \"ReadMotorInsuranceCustomerPaymentDetails\"\n                    ],\n                    \"OpenFinanceBilling\": {\n                        \"Purpose\": \"ClaimHistory\"\n                    }\n                },\n                \"subscription\": {\n                    \"Webhook\": {\n                            \"Url\": \"http://localhost:4700/mock-event-receiver\",\n                            \"IsActive\": false\n                        }\n                }\n            }\n        ]\n    },\n    \"signingKeyPEM\": \"{{pem-local}}\"\n}"
+                          "raw": "{\n    \"header\": {\n        \"alg\": \"PS256\",\n        \"kid\": \"{{kid-local}}\"\n    },\n    \"body\": {\n        \"aud\": \"{{issuer}}\",\n        \"exp\": {{exp}},\n        \"iss\": \"{{_clientId}}\",\n        \"scope\": \"insurance openid\",\n        \"redirect_uri\": \"{{redirectUrl}}\",\n        \"client_id\": \"{{_clientId}}\",\n        \"nonce\": \"{{$guid}}\",\n        \"state\": \"{{$guid}}\",\n        \"nbf\": {{nbf}},\n        \"response_type\": \"code\",\n        \"code_challenge_method\": \"S256\",\n        \"code_challenge\": \"{{code-challenge}}\",\n        \"max_age\": 3600,\n        \"authorization_details\": [\n            {\n                \"type\": \"urn:openfinanceuae:insurance-consent:v1.2\",\n                \"consent\": {\n                    \"BaseConsentId\": \"eaa71c98-e0f3-4f08-90a5-21680fd85dad\",\n                    \"ExpirationDateTime\": \"{{future_date}}T23:00:00.000Z\",\n                    \"ConsentId\": \"{{$guid}}\",\n                     \"Permissions\": [\n                        \"ReadMotorInsurancePolicies\",\n                        \"ReadMotorInsuranceCustomerBasic\",\n                        \"ReadMotorInsuranceCustomerDetail\",\n                        \"ReadMotorInsuranceProduct\",\n                        \"ReadMotorInsuranceTransactions\",\n                        \"ReadMotorInsuranceCustomerPaymentDetails\"\n                    ],\n                    \"OpenFinanceBilling\": {\n                        \"Purpose\": \"ClaimHistory\"\n                    }\n                },\n                \"subscription\": {\n                    \"Webhook\": {\n                            \"Url\": \"http://localhost:4700/mock-event-receiver\",\n                            \"IsActive\": false\n                        }\n                }\n            }\n        ]\n    },\n    \"signingKeyPEM\": \"{{pem-local}}\"\n}"
                         },
                         "url": {
                           "raw": "{{rs}}/o3/v1.0/message-signature",
@@ -88980,6 +88963,19 @@
         "packages": {},
         "requests": {},
         "exec": [
+          "/* seed date variables (migration) */",
+          "(function(){",
+          "  var _now = new Date();",
+          "  function _plusDays(d) { var t = new Date(_now); t.setUTCDate(t.getUTCDate() + d); return t.toISOString().slice(0, 10); }",
+          "  var _vars = pm.environment.name ? pm.environment : pm.collectionVariables;",
+          "  _vars.set('today', _plusDays(0));",
+          "  _vars.set('todays_date', _plusDays(0));",
+          "  _vars.set('tomorrows_date', _plusDays(1));",
+          "  _vars.set('tomorrow_date', _plusDays(1));",
+          "  _vars.set('day_after_tomorrow_date', _plusDays(2));",
+          "  _vars.set('future_date', _plusDays(350));",
+          "})();",
+          "",
           ""
         ]
       }
