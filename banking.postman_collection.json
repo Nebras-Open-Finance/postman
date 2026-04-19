@@ -142816,6 +142816,11 @@
 									{
 										"key": "x-fapi-interaction-id",
 										"value": "{{x-fapi-interaction-id}}"
+									},
+									{
+										"key": "x-fapi-customer-ip-address",
+										"value": "192.168.0.1",
+										"type": "text"
 									}
 								],
 								"body": {
