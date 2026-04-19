@@ -78475,6 +78475,193 @@
 											"response": []
 										},
 										{
+											"name": "8003a: Paginated Transactions",
+											"item": [
+												{
+													"name": "TPP-API Hub: GET accounts/{accountId}/transactions",
+													"event": [
+														{
+															"listen": "prerequest",
+															"script": {
+																"exec": [
+																	"const uuid = require('uuid');",
+																	"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"x-fapi-interaction-id\", uuid.v4());"
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														},
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"const json = JSON.parse(responseBody);",
+																	"const set = (k, v) => (pm.environment.name ? pm.environment : pm.collectionVariables).set(k, v);",
+																	"// Always set, no fallback. When Links.Next is absent (last page), this clears",
+																	"// the variable, so a further click of the next-page request will fail loudly.",
+																	"set('transactions-next-link', json.Links && json.Links.Next);"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															},
+															{
+																"key": "Accept",
+																"value": "application/json",
+																"type": "text"
+															},
+															{
+																"key": "Authorization",
+																"value": "Bearer {{token-from-auth-code-grant-accounts}}",
+																"type": "text"
+															},
+															{
+																"key": "x-fapi-interaction-id",
+																"value": "{{x-fapi-interaction-id}}",
+																"type": "text"
+															},
+															{
+																"key": "x-fapi-auth-date",
+																"value": "Sat, 15 Mar 2025 19:43:31 UTC",
+																"type": "text",
+																"disabled": true
+															},
+															{
+																"key": "x-fapi-customer-ip-address",
+																"value": "192.168.1.1",
+																"type": "text",
+																"disabled": true
+															},
+															{
+																"key": "x-customer-user-agent",
+																"value": "Chrome/114.0.5735.110",
+																"type": "text",
+																"disabled": true
+															}
+														],
+														"url": {
+															"raw": "{{rs}}/open-finance/account-information/v2.1/accounts/{{account-id}}/transactions",
+															"host": [
+																"{{rs}}"
+															],
+															"path": [
+																"open-finance",
+																"account-information",
+																"v2.1",
+																"accounts",
+																"{{account-id}}",
+																"transactions"
+															],
+															"query": [
+																{
+																	"key": "fromBookingDateTime",
+																	"value": "2023-12-07T00:00:00.000Z",
+																	"disabled": true
+																},
+																{
+																	"key": "toBookingDateTime",
+																	"value": "2025-12-07T00:00:00.000Z",
+																	"disabled": true
+																}
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "TPP-API Hub: GET transactions (follow Links.Next)",
+													"event": [
+														{
+															"listen": "prerequest",
+															"script": {
+																"exec": [
+																	"const uuid = require('uuid');",
+																	"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"x-fapi-interaction-id\", uuid.v4());"
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														},
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"const json = JSON.parse(responseBody);",
+																	"const set = (k, v) => (pm.environment.name ? pm.environment : pm.collectionVariables).set(k, v);",
+																	"// Always set, no fallback. When Links.Next is absent (last page), this clears",
+																	"// the variable, so a further click of the next-page request will fail loudly.",
+																	"set('transactions-next-link', json.Links && json.Links.Next);"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															},
+															{
+																"key": "Accept",
+																"value": "application/json",
+																"type": "text"
+															},
+															{
+																"key": "Authorization",
+																"value": "Bearer {{token-from-auth-code-grant-accounts}}",
+																"type": "text"
+															},
+															{
+																"key": "x-fapi-interaction-id",
+																"value": "{{x-fapi-interaction-id}}",
+																"type": "text"
+															},
+															{
+																"key": "x-fapi-auth-date",
+																"value": "Sat, 15 Mar 2025 19:43:31 UTC",
+																"type": "text",
+																"disabled": true
+															},
+															{
+																"key": "x-fapi-customer-ip-address",
+																"value": "192.168.1.1",
+																"type": "text",
+																"disabled": true
+															},
+															{
+																"key": "x-customer-user-agent",
+																"value": "Chrome/114.0.5735.110",
+																"type": "text",
+																"disabled": true
+															}
+														],
+														"url": {
+															"raw": "{{transactions-next-link}}",
+															"host": [
+																"{{transactions-next-link}}"
+															]
+														}
+													},
+													"response": []
+												}
+											]
+										},
+										{
 											"name": "8004: TPP-API Hub: GET accounts/{accountId}/direct-debits",
 											"event": [
 												{
@@ -82347,6 +82534,193 @@
 												}
 											},
 											"response": []
+										},
+										{
+											"name": "8003a: Paginated Transactions",
+											"item": [
+												{
+													"name": "TPP-API Hub: GET accounts/{accountId}/transactions",
+													"event": [
+														{
+															"listen": "prerequest",
+															"script": {
+																"exec": [
+																	"const uuid = require('uuid');",
+																	"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"x-fapi-interaction-id\", uuid.v4());"
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														},
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"const json = JSON.parse(responseBody);",
+																	"const set = (k, v) => (pm.environment.name ? pm.environment : pm.collectionVariables).set(k, v);",
+																	"// Always set, no fallback. When Links.Next is absent (last page), this clears",
+																	"// the variable, so a further click of the next-page request will fail loudly.",
+																	"set('transactions-next-link', json.Links && json.Links.Next);"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															},
+															{
+																"key": "Accept",
+																"value": "application/json",
+																"type": "text"
+															},
+															{
+																"key": "Authorization",
+																"value": "Bearer {{token-from-auth-code-grant-accounts}}",
+																"type": "text"
+															},
+															{
+																"key": "x-fapi-interaction-id",
+																"value": "{{x-fapi-interaction-id}}",
+																"type": "text"
+															},
+															{
+																"key": "x-fapi-auth-date",
+																"value": "Sat, 15 Mar 2025 19:43:31 UTC",
+																"type": "text",
+																"disabled": true
+															},
+															{
+																"key": "x-fapi-customer-ip-address",
+																"value": "192.168.1.1",
+																"type": "text",
+																"disabled": true
+															},
+															{
+																"key": "x-customer-user-agent",
+																"value": "Chrome/114.0.5735.110",
+																"type": "text",
+																"disabled": true
+															}
+														],
+														"url": {
+															"raw": "{{rs}}/open-finance/account-information/v2.1/accounts/{{account-id}}/transactions",
+															"host": [
+																"{{rs}}"
+															],
+															"path": [
+																"open-finance",
+																"account-information",
+																"v2.1",
+																"accounts",
+																"{{account-id}}",
+																"transactions"
+															],
+															"query": [
+																{
+																	"key": "fromBookingDateTime",
+																	"value": "2023-12-07T00:00:00.000Z",
+																	"disabled": true
+																},
+																{
+																	"key": "toBookingDateTime",
+																	"value": "2025-12-07T00:00:00.000Z",
+																	"disabled": true
+																}
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "TPP-API Hub: GET transactions (follow Links.Next)",
+													"event": [
+														{
+															"listen": "prerequest",
+															"script": {
+																"exec": [
+																	"const uuid = require('uuid');",
+																	"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"x-fapi-interaction-id\", uuid.v4());"
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														},
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"const json = JSON.parse(responseBody);",
+																	"const set = (k, v) => (pm.environment.name ? pm.environment : pm.collectionVariables).set(k, v);",
+																	"// Always set, no fallback. When Links.Next is absent (last page), this clears",
+																	"// the variable, so a further click of the next-page request will fail loudly.",
+																	"set('transactions-next-link', json.Links && json.Links.Next);"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															},
+															{
+																"key": "Accept",
+																"value": "application/json",
+																"type": "text"
+															},
+															{
+																"key": "Authorization",
+																"value": "Bearer {{token-from-auth-code-grant-accounts}}",
+																"type": "text"
+															},
+															{
+																"key": "x-fapi-interaction-id",
+																"value": "{{x-fapi-interaction-id}}",
+																"type": "text"
+															},
+															{
+																"key": "x-fapi-auth-date",
+																"value": "Sat, 15 Mar 2025 19:43:31 UTC",
+																"type": "text",
+																"disabled": true
+															},
+															{
+																"key": "x-fapi-customer-ip-address",
+																"value": "192.168.1.1",
+																"type": "text",
+																"disabled": true
+															},
+															{
+																"key": "x-customer-user-agent",
+																"value": "Chrome/114.0.5735.110",
+																"type": "text",
+																"disabled": true
+															}
+														],
+														"url": {
+															"raw": "{{transactions-next-link}}",
+															"host": [
+																"{{transactions-next-link}}"
+															]
+														}
+													},
+													"response": []
+												}
+											]
 										}
 									]
 								},
@@ -86108,6 +86482,193 @@
 												}
 											},
 											"response": []
+										},
+										{
+											"name": "8003a: Paginated Transactions",
+											"item": [
+												{
+													"name": "TPP-API Hub: GET accounts/{accountId}/transactions",
+													"event": [
+														{
+															"listen": "prerequest",
+															"script": {
+																"exec": [
+																	"const uuid = require('uuid');",
+																	"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"x-fapi-interaction-id\", uuid.v4());"
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														},
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"const json = JSON.parse(responseBody);",
+																	"const set = (k, v) => (pm.environment.name ? pm.environment : pm.collectionVariables).set(k, v);",
+																	"// Always set, no fallback. When Links.Next is absent (last page), this clears",
+																	"// the variable, so a further click of the next-page request will fail loudly.",
+																	"set('transactions-next-link', json.Links && json.Links.Next);"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															},
+															{
+																"key": "Accept",
+																"value": "application/json",
+																"type": "text"
+															},
+															{
+																"key": "Authorization",
+																"value": "Bearer {{token-from-auth-code-grant-accounts}}",
+																"type": "text"
+															},
+															{
+																"key": "x-fapi-interaction-id",
+																"value": "{{x-fapi-interaction-id}}",
+																"type": "text"
+															},
+															{
+																"key": "x-fapi-auth-date",
+																"value": "Sat, 15 Mar 2025 19:43:31 UTC",
+																"type": "text",
+																"disabled": true
+															},
+															{
+																"key": "x-fapi-customer-ip-address",
+																"value": "192.168.1.1",
+																"type": "text",
+																"disabled": true
+															},
+															{
+																"key": "x-customer-user-agent",
+																"value": "Chrome/114.0.5735.110",
+																"type": "text",
+																"disabled": true
+															}
+														],
+														"url": {
+															"raw": "{{rs}}/open-finance/account-information/v2.1/accounts/{{account-id}}/transactions",
+															"host": [
+																"{{rs}}"
+															],
+															"path": [
+																"open-finance",
+																"account-information",
+																"v2.1",
+																"accounts",
+																"{{account-id}}",
+																"transactions"
+															],
+															"query": [
+																{
+																	"key": "fromBookingDateTime",
+																	"value": "2023-12-07T00:00:00.000Z",
+																	"disabled": true
+																},
+																{
+																	"key": "toBookingDateTime",
+																	"value": "2025-12-07T00:00:00.000Z",
+																	"disabled": true
+																}
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "TPP-API Hub: GET transactions (follow Links.Next)",
+													"event": [
+														{
+															"listen": "prerequest",
+															"script": {
+																"exec": [
+																	"const uuid = require('uuid');",
+																	"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"x-fapi-interaction-id\", uuid.v4());"
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														},
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"const json = JSON.parse(responseBody);",
+																	"const set = (k, v) => (pm.environment.name ? pm.environment : pm.collectionVariables).set(k, v);",
+																	"// Always set, no fallback. When Links.Next is absent (last page), this clears",
+																	"// the variable, so a further click of the next-page request will fail loudly.",
+																	"set('transactions-next-link', json.Links && json.Links.Next);"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															},
+															{
+																"key": "Accept",
+																"value": "application/json",
+																"type": "text"
+															},
+															{
+																"key": "Authorization",
+																"value": "Bearer {{token-from-auth-code-grant-accounts}}",
+																"type": "text"
+															},
+															{
+																"key": "x-fapi-interaction-id",
+																"value": "{{x-fapi-interaction-id}}",
+																"type": "text"
+															},
+															{
+																"key": "x-fapi-auth-date",
+																"value": "Sat, 15 Mar 2025 19:43:31 UTC",
+																"type": "text",
+																"disabled": true
+															},
+															{
+																"key": "x-fapi-customer-ip-address",
+																"value": "192.168.1.1",
+																"type": "text",
+																"disabled": true
+															},
+															{
+																"key": "x-customer-user-agent",
+																"value": "Chrome/114.0.5735.110",
+																"type": "text",
+																"disabled": true
+															}
+														],
+														"url": {
+															"raw": "{{transactions-next-link}}",
+															"host": [
+																"{{transactions-next-link}}"
+															]
+														}
+													},
+													"response": []
+												}
+											]
 										},
 										{
 											"name": "8004: TPP-API Hub: GET accounts/{accountId}/direct-debits",
@@ -90476,6 +91037,193 @@
 												}
 											},
 											"response": []
+										},
+										{
+											"name": "8003a: Paginated Transactions",
+											"item": [
+												{
+													"name": "TPP-API Hub: GET accounts/{accountId}/transactions",
+													"event": [
+														{
+															"listen": "prerequest",
+															"script": {
+																"exec": [
+																	"const uuid = require('uuid');",
+																	"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"x-fapi-interaction-id\", uuid.v4());"
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														},
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"const json = JSON.parse(responseBody);",
+																	"const set = (k, v) => (pm.environment.name ? pm.environment : pm.collectionVariables).set(k, v);",
+																	"// Always set, no fallback. When Links.Next is absent (last page), this clears",
+																	"// the variable, so a further click of the next-page request will fail loudly.",
+																	"set('transactions-next-link', json.Links && json.Links.Next);"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															},
+															{
+																"key": "Accept",
+																"value": "application/json",
+																"type": "text"
+															},
+															{
+																"key": "Authorization",
+																"value": "Bearer {{token-from-auth-code-grant-accounts}}",
+																"type": "text"
+															},
+															{
+																"key": "x-fapi-interaction-id",
+																"value": "{{x-fapi-interaction-id}}",
+																"type": "text"
+															},
+															{
+																"key": "x-fapi-auth-date",
+																"value": "Sat, 15 Mar 2025 19:43:31 UTC",
+																"type": "text",
+																"disabled": true
+															},
+															{
+																"key": "x-fapi-customer-ip-address",
+																"value": "192.168.1.1",
+																"type": "text",
+																"disabled": true
+															},
+															{
+																"key": "x-customer-user-agent",
+																"value": "Chrome/114.0.5735.110",
+																"type": "text",
+																"disabled": true
+															}
+														],
+														"url": {
+															"raw": "{{rs}}/open-finance/account-information/v2.1/accounts/{{account-id}}/transactions",
+															"host": [
+																"{{rs}}"
+															],
+															"path": [
+																"open-finance",
+																"account-information",
+																"v2.1",
+																"accounts",
+																"{{account-id}}",
+																"transactions"
+															],
+															"query": [
+																{
+																	"key": "fromBookingDateTime",
+																	"value": "2023-12-07T00:00:00.000Z",
+																	"disabled": true
+																},
+																{
+																	"key": "toBookingDateTime",
+																	"value": "2025-12-07T00:00:00.000Z",
+																	"disabled": true
+																}
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "TPP-API Hub: GET transactions (follow Links.Next)",
+													"event": [
+														{
+															"listen": "prerequest",
+															"script": {
+																"exec": [
+																	"const uuid = require('uuid');",
+																	"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"x-fapi-interaction-id\", uuid.v4());"
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														},
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"const json = JSON.parse(responseBody);",
+																	"const set = (k, v) => (pm.environment.name ? pm.environment : pm.collectionVariables).set(k, v);",
+																	"// Always set, no fallback. When Links.Next is absent (last page), this clears",
+																	"// the variable, so a further click of the next-page request will fail loudly.",
+																	"set('transactions-next-link', json.Links && json.Links.Next);"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															},
+															{
+																"key": "Accept",
+																"value": "application/json",
+																"type": "text"
+															},
+															{
+																"key": "Authorization",
+																"value": "Bearer {{token-from-auth-code-grant-accounts}}",
+																"type": "text"
+															},
+															{
+																"key": "x-fapi-interaction-id",
+																"value": "{{x-fapi-interaction-id}}",
+																"type": "text"
+															},
+															{
+																"key": "x-fapi-auth-date",
+																"value": "Sat, 15 Mar 2025 19:43:31 UTC",
+																"type": "text",
+																"disabled": true
+															},
+															{
+																"key": "x-fapi-customer-ip-address",
+																"value": "192.168.1.1",
+																"type": "text",
+																"disabled": true
+															},
+															{
+																"key": "x-customer-user-agent",
+																"value": "Chrome/114.0.5735.110",
+																"type": "text",
+																"disabled": true
+															}
+														],
+														"url": {
+															"raw": "{{transactions-next-link}}",
+															"host": [
+																"{{transactions-next-link}}"
+															]
+														}
+													},
+													"response": []
+												}
+											]
 										},
 										{
 											"name": "8004: TPP-API Hub: GET accounts/{accountId}/direct-debits",
@@ -106836,7 +107584,7 @@
 															"script": {
 																"exec": [
 																	"let jsonData = JSON.parse(responseBody);",
-																	"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																	"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																	"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																],
 																"type": "text/javascript",
@@ -108623,7 +109371,7 @@
 															"script": {
 																"exec": [
 																	"let jsonData = JSON.parse(responseBody);",
-																	"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																	"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																	"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																],
 																"type": "text/javascript",
@@ -110405,7 +111153,7 @@
 																	"script": {
 																		"exec": [
 																			"let jsonData = JSON.parse(responseBody);",
-																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																			"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																		],
 																		"type": "text/javascript",
@@ -112186,7 +112934,7 @@
 																	"script": {
 																		"exec": [
 																			"let jsonData = JSON.parse(responseBody);",
-																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																			"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																		],
 																		"type": "text/javascript",
@@ -113969,7 +114717,7 @@
 																	"script": {
 																		"exec": [
 																			"let jsonData = JSON.parse(responseBody);",
-																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																			"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																		],
 																		"type": "text/javascript",
@@ -115749,7 +116497,7 @@
 																	"script": {
 																		"exec": [
 																			"let jsonData = JSON.parse(responseBody);",
-																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																			"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																		],
 																		"type": "text/javascript",
@@ -117531,7 +118279,7 @@
 																	"script": {
 																		"exec": [
 																			"let jsonData = JSON.parse(responseBody);",
-																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																			"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																		],
 																		"type": "text/javascript",
@@ -119308,7 +120056,7 @@
 																	"script": {
 																		"exec": [
 																			"let jsonData = JSON.parse(responseBody);",
-																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																			"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																		],
 																		"type": "text/javascript",
@@ -121084,7 +121832,7 @@
 																	"script": {
 																		"exec": [
 																			"let jsonData = JSON.parse(responseBody);",
-																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																			"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																		],
 																		"type": "text/javascript",
@@ -122857,7 +123605,7 @@
 																	"script": {
 																		"exec": [
 																			"let jsonData = JSON.parse(responseBody);",
-																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																			"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																		],
 																		"type": "text/javascript",
@@ -124796,7 +125544,7 @@
 																	"script": {
 																		"exec": [
 																			"let jsonData = JSON.parse(responseBody);",
-																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																			"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																		],
 																		"type": "text/javascript",
@@ -127118,7 +127866,7 @@
 																	"script": {
 																		"exec": [
 																			"let jsonData = JSON.parse(responseBody);",
-																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																			"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																		],
 																		"type": "text/javascript",
@@ -129440,7 +130188,7 @@
 																	"script": {
 																		"exec": [
 																			"let jsonData = JSON.parse(responseBody);",
-																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																			"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																		],
 																		"type": "text/javascript",
@@ -131216,7 +131964,7 @@
 																	"script": {
 																		"exec": [
 																			"let jsonData = JSON.parse(responseBody);",
-																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																			"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																		],
 																		"type": "text/javascript",
@@ -133155,7 +133903,7 @@
 																	"script": {
 																		"exec": [
 																			"let jsonData = JSON.parse(responseBody);",
-																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																			"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																		],
 																		"type": "text/javascript",
@@ -135477,7 +136225,7 @@
 																	"script": {
 																		"exec": [
 																			"let jsonData = JSON.parse(responseBody);",
-																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																			"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																		],
 																		"type": "text/javascript",
@@ -137799,7 +138547,7 @@
 																	"script": {
 																		"exec": [
 																			"let jsonData = JSON.parse(responseBody);",
-																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-accounts\", jsonData.access_token);",
+																			"(pm.environment.name ? pm.environment : pm.collectionVariables).set(\"token-from-auth-code-grant-payments\", jsonData.access_token);",
 																			"if (jsonData.refresh_token) { (pm.environment.name ? pm.environment : pm.collectionVariables).set(\"refresh_token\", jsonData.refresh_token); }"
 																		],
 																		"type": "text/javascript",
