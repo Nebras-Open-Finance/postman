@@ -4,9 +4,9 @@
   "private": true,
   "description": "UAE Open Finance Postman collections + flow tests",
   "scripts": {
-    "test": "node --test tests/**/*.test.js",
-    "test:insurance": "node --test tests/insurance/*.test.js",
-    "test:banking": "node --test tests/banking/*.test.js"
+    "test": "node --test supporting/tests/**/*.test.js",
+    "test:insurance": "node --test supporting/tests/insurance/*.test.js",
+    "test:banking": "node --test supporting/tests/banking/*.test.js"
   },
   "devDependencies": {
     "newman": "^6.2.1"

@@ -4,6 +4,28 @@ A Postman collection provided to the UAE Open Finance ecosystem to help **LFIs**
 
 ---
 
+## Repository Structure
+
+The two `.postman_collection.json` files at the root are the **published surface** — import either one into Postman to start using it.
+
+```text
+banking.postman_collection.json      # Banking collection
+insurance.postman_collection.json    # Insurance collection
+supporting/                          # Everything that sits alongside the collections
+├── tests/                            # Newman-based flow tests (node --test)
+│   ├── banking/
+│   ├── insurance/
+│   └── helpers/
+├── certs.example/                    # Template for local test configuration
+│   └── config.example.js
+├── certs/                            # Local credentials + keys (gitignored)
+└── open-api-standards/               # Reference OpenAPI specs (gitignored)
+```
+
+`supporting/` holds everything that is not part of the published Postman surface — automated tests, local credentials, and reference specs used during collection development. Consumers of the collection do not need anything in `supporting/`; it exists for contributors and maintainers.
+
+---
+
 ## Prerequisites
 
 Before using this collection you must have:

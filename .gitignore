@@ -1,6 +1,6 @@
 # Testing
-certs/
-open-api-standards/
+supporting/certs/
+supporting/open-api-standards/
 .claude
 
 # Node

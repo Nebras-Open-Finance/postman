@@ -11,7 +11,7 @@ const {
 // Discovery provides issuer / token / par endpoints; the rest come from config.
 async function buildEnv(target) {
   const cfg = creds[target];
-  if (!cfg) throw new Error(`Unknown target "${target}" in certs/config.js`);
+  if (!cfg) throw new Error(`Unknown target "${target}" in supporting/certs/config.js`);
   const disco = await discover(cfg.discoveryUri);
 
   // Postman substitutes variables verbatim into raw bodies; PEMs must be
@@ -74,6 +74,7 @@ function runNewman({ collection, environment }) {
   return new Promise((resolve, reject) => {
     const failures = [];
     const scriptWarnings = [];
+    const requestResults = [];
     let currentItem = null;
     newman.run({
       collection,
@@ -86,29 +87,23 @@ function runNewman({ collection, environment }) {
       bail: false,
     }, (err, summary) => {
       if (err) return reject(err);
-      resolve({ summary, failures, scriptWarnings });
+      resolve({ summary, failures, scriptWarnings, requestResults });
     })
     .on('beforeItem', (err, args) => { currentItem = args?.item?.name; })
     .on('request', (err, args) => {
-      if (err) failures.push({ phase: 'request', name: args.item.name, error: err.message });
-      else if (args.response && args.response.code >= 400) {
-        failures.push({
-          phase: 'http',
-          name: args.item.name,
-          status: args.response.code,
-          body: args.response.stream?.toString('utf8').slice(0, 500),
-        });
-      } else if (args.response && /POST to PAR end-point/i.test(args.item.name || '') && args.response.code !== 201) {
+      const name = args?.item?.name;
+      const status = args?.response?.code;
+      const body = args?.response?.stream?.toString('utf8').slice(0, 500);
+      requestResults.push({ name, status, body, error: err?.message });
+      if (err) failures.push({ phase: 'request', name, error: err.message });
+      else if (args.response && status >= 400) {
+        failures.push({ phase: 'http', name, status, body });
+      } else if (args.response && /POST to PAR end-point/i.test(name || '') && status !== 201) {
         // RFC 9126: PAR must return 201 Created. A 200 would still be a regression.
-        failures.push({
-          phase: 'http',
-          name: args.item.name,
-          status: args.response.code,
-          body: `expected 201, got ${args.response.code}`,
-        });
+        failures.push({ phase: 'http', name, status, body: `expected 201, got ${status}` });
       }
       if (process.env.NEBRAS_TEST_DEBUG && args.response) {
-        console.error(`[debug] ${args.item.name} -> ${args.response.code} ${args.response.stream?.toString('utf8').slice(0, 300)}`);
+        console.error(`[debug] ${name} -> ${status} ${body?.slice(0, 300)}`);
       }
     })
     .on('exception', (cursor, err) => {
@@ -127,6 +122,39 @@ function runNewman({ collection, environment }) {
 async function runFlow({ collectionName, flow, stopAt, target }) {
   const collection = loadCollection(collectionName);
   const subset = buildSubsetCollection(collection, flow.folder, stopAt);
+  const environment = await buildEnv(target);
+  return runNewman({ collection: subset, environment });
+}
+
+// Build a synthetic folder that concatenates the direct requests of multiple
+// sibling folders (e.g. "Token Exchange" + "Resource Endpoints"). Variant
+// subfolders like "(application/jwt)" are excluded — they're alternate
+// flavours of the same requests, not part of the vanilla flow. Useful when a
+// flow is split across folders but must share env state (the access_token
+// minted by Token Exchange feeds the Resource calls).
+function composeFolder({ collectionName, folderPaths, name }) {
+  const collection = loadCollection(collectionName);
+  const items = [];
+  for (const p of folderPaths) {
+    const folder = findFolder(collection.item, p);
+    if (!folder) throw new Error(`Folder not found: ${p.join(' > ')}`);
+    items.push(...(folder.item || []).filter(it => it.request));
+  }
+  return { name: name || folderPaths.map(p => p.join('/')).join(' + '), item: items };
+}
+
+// Run a folder (synthetic or otherwise) with optional collection-variable
+// overrides. The overrides are injected into the cloned subset so `{{name}}`
+// placeholders anywhere in the collection resolve to the supplied values.
+async function runComposedFlow({ collectionName, folder, target, inject = {} }) {
+  const collection = loadCollection(collectionName);
+  const subset = buildSubsetCollection(collection, folder);
+  subset.variable = subset.variable || [];
+  for (const [key, value] of Object.entries(inject)) {
+    const existing = subset.variable.find(v => v.key === key);
+    if (existing) existing.value = value;
+    else subset.variable.push({ key, value, type: 'string' });
+  }
   const environment = await buildEnv(target);
   return runNewman({ collection: subset, environment });
 }
@@ -152,6 +180,8 @@ module.exports = {
   buildEnv,
   runNewman,
   runFlow,
+  runComposedFlow,
+  composeFolder,
   flowsUnder,
   folderAsFlow,
   StopAt,

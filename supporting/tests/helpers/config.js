@@ -1,12 +1,12 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
-const repoRoot = path.join(__dirname, '..', '..');
-const configPath = path.join(repoRoot, 'certs', 'config.js');
+const repoRoot = path.join(__dirname, '..', '..', '..');
+const configPath = path.join(repoRoot, 'supporting', 'certs', 'config.js');
 
 if (!fs.existsSync(configPath)) {
   throw new Error(
-    `Missing ${path.relative(repoRoot, configPath)} — copy certs.example/config.example.js to certs/config.js and populate it.`
+    `Missing ${path.relative(repoRoot, configPath)} — copy supporting/certs.example/config.example.js to supporting/certs/config.js and populate it.`
   );
 }
 
