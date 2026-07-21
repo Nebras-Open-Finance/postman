@@ -99978,7 +99978,7 @@
 											]
 										},
 										{
-											"name": "Example 3 - CoP passed in by TPP",
+											"name": "Example 4 - CoP passed in by TPP",
 											"item": [
 												{
 													"name": "Consent Flow",
@@ -102383,7 +102383,7 @@
 											]
 										},
 										{
-											"name": "Example 4 - With Accounts & Balances",
+											"name": "Example 5 - With Accounts & Balances",
 											"item": [
 												{
 													"name": "Consent Flow",
@@ -104874,7 +104874,7 @@
 											]
 										},
 										{
-											"name": "Example 5 - With Multi-Authorization",
+											"name": "Example 6 - With Multi-Authorization",
 											"item": [
 												{
 													"name": "Consent Flow",
